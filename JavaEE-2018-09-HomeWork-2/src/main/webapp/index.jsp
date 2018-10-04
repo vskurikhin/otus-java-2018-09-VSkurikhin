@@ -10,8 +10,8 @@
 <ul>
     <li><a href="directory">Directory of Departments</a>
     <li><a href="registry">Registry of Employees</a>
-    <li><a href="change/1">Уволить Фунта</a>
-    <li><a href="change/5">Уволить Романова</a>
+    <li><a href="change/1">Изменить Фунта</a>
+    <li><a href="change/5">Изменить Романова</a>
     <li><a href="delete/1">Удалить Фунта</a>
     <li><a href="delete/5">Удалить Романова</a>
     <li><a href="delete/4">Удалить Петров</a>

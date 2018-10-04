@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import javax.persistence.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,11 +15,11 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import ru.otus.dataset.EmployeesRegistryEntity;
-import ru.otus.dataset.UserEntity;
 
 @WebServlet("/registry")
-public class JPARegistry extends HttpServlet {
-    public static final String PERSISTENCE_UNIT_NAME = "jpa";
+public class JPARegistryServlet extends HttpServlet
+{
+    private static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
 
@@ -24,18 +28,17 @@ public class JPARegistry extends HttpServlet {
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Registry</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 подготовка Application уровня.");
+
         EntityManager em = emf.createEntityManager(); // for Tomcat
         EntityTransaction transaction = em.getTransaction();
+
         try {
             transaction.begin();
-            Query q = em.createQuery("SELECT empl FROM EmployeesRegistryEntity empl ORDER BY empl.id DESC");
+            Query q = em.createQuery(
+                "SELECT empl FROM EmployeesRegistryEntity empl ORDER BY empl.id DESC"
+            );
+            //noinspection unchecked
             List<EmployeesRegistryEntity> result = q.getResultList();
             out.println("<ul>");
 
@@ -44,13 +47,14 @@ public class JPARegistry extends HttpServlet {
                 sb.append(entity.getId()).append(" ")
                         .append(entity.getFirstName()).append(' ')
                         .append(entity.getSecondName()).append(' ')
-                        .append(entity.getSurName());
+                        .append(entity.getSurName()).append(',').append(' ')
+                        .append(entity.getJob());
                 out.println(sb);
             }
             out.println("</ul>");
             transaction.commit();
         }
-        catch (Exception e){
+        catch (Exception e) {
             transaction.rollback();
             throw new ServletException(e);
         }
@@ -74,3 +78,7 @@ public class JPARegistry extends HttpServlet {
         doGet(request, response);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

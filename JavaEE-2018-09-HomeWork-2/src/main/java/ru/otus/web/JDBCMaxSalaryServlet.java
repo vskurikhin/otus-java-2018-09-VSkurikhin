@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,10 +17,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Stack;
 
 @WebServlet("/maxsalary")
-public class JDBCMaxSalary extends HttpServlet {
+public class JDBCMaxSalaryServlet extends HttpServlet
+{
     @Resource(name = "jdbc/PostgresMyDB") // for Tomcat
     private DataSource ds;
 
@@ -26,22 +30,17 @@ public class JDBCMaxSalary extends HttpServlet {
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Max Salary</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 хранимые процедуры.");
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT * FROM mygetmax();"
-             );
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM mygetmax();");
              ResultSet resultSet = ps.executeQuery()
         ) {
             while(resultSet.next()) {
-                out.println("Максимальная зарплата у: " + resultSet.getString(1));
+                out.println(
+                    "Максимальная зарплата у сотрудника по фамилии: "
+                    + resultSet.getString(1)
+                );
             }
 
             out.println("</body>");
@@ -63,3 +62,7 @@ public class JDBCMaxSalary extends HttpServlet {
         doGet(request, response);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF
