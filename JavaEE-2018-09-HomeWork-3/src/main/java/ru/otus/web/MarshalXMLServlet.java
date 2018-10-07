@@ -4,8 +4,15 @@ package ru.otus.web;
  * Created by VSkurikhin at autumn 2018.
  */
 
+import org.dom4j.dom.DOMDocument;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import ru.otus.dataset.EmpEntitiesList;
 import ru.otus.dataset.EmpEntity;
+import ru.otus.xml.DOMUtil;
 
 import javax.persistence.*;
 import javax.servlet.ServletException;
@@ -16,42 +23,40 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 @WebServlet(urlPatterns = {"/marshal", "/marshal/*"})
 public class MarshalXMLServlet extends HttpServlet
 {
+    public static final String EMPTY_EMPLOYEES =
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
+            "<employees>\n" +
+            "</employees>";
+    private static InputStream EMPTY_EMPLOYEES_STREAM = new ByteArrayInputStream(
+            EMPTY_EMPLOYEES.getBytes(StandardCharsets.UTF_8)
+    );
     private static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
-    private static final String DATA_FILE_LOCATION = "testDataFileLocation";
+    private static final String DATA_FILE_LOCATION = "DataFileLocation";
     private static final String SELECT_EMPL_ENTITY = "SELECT empl FROM EmpEntity empl";
     static final String GET = "get";
     static final String OK = "ok";
     static final String SAVE = "save";
-
-    private String retrieveCommand(HttpServletRequest request)
-    {
-        try {
-            String pathInfo = request.getPathInfo();
-            if (pathInfo.startsWith("/")) {
-                return pathInfo.substring(1);
-            }
-        } catch (NullPointerException ignored) { }
-        return null;
-    }
-
-    private void ok(PrintWriter out)
-    {
-        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-        out.println("<ok ok='ok'/>");
-    }
+    static final String DOMFILTER = "domfilter";
 
     private EmpEntitiesList getEmpEntitiesList(EntityManager em, EntityTransaction transaction)
     {
@@ -82,6 +87,58 @@ public class MarshalXMLServlet extends HttpServlet
         }
     }
 
+    private Document getDataFileDocument()
+    throws URISyntaxException, ParserConfigurationException, IOException, SAXException
+    {
+        String path = getServletContext().getInitParameter(DATA_FILE_LOCATION);
+        return DOMUtil.getDocument(new URI(path).toString());
+    }
+
+    private Transformer getTransformer() throws TransformerConfigurationException
+    {
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        return tFactory.newTransformer();
+    }
+
+    private XPathExpression getXPathExpression(String expression) throws XPathExpressionException
+    {
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+        return xpath.compile(expression);
+    }
+
+    private NodeList getNodeList(Document document, XPathExpression expr)
+    throws XPathExpressionException
+    {
+        Object result = expr.evaluate(document, XPathConstants.NODESET);
+        return (NodeList) result;
+    }
+
+    private void filterByAverageSalary(PrintWriter out)
+    throws URISyntaxException, IOException, SAXException, ParserConfigurationException,
+            XPathExpressionException, TransformerException
+    {
+        String expression = "/employees/employee[" +
+                "@salary > (sum(/employees/employee/@salary) div count(/employees/employee/@salary))]";
+        Document document = getDataFileDocument();
+        // Use a Transformer for output
+        Transformer transformer = getTransformer();
+        XPathExpression expr = getXPathExpression(expression);
+        NodeList nodes = getNodeList(document, expr);
+        Document resultXML = DOMUtil.getDocument(EMPTY_EMPLOYEES_STREAM);
+        Element employees = resultXML.createElement("employees");
+
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            Node copyNode = nodes.item(i).cloneNode(true);
+            resultXML.adoptNode(copyNode);
+            employees.appendChild(copyNode);
+        }
+
+        DOMSource source = new DOMSource(employees);
+        StreamResult resultOut = new StreamResult(out);
+        transformer.transform(source, resultOut);
+    }
+
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException
     {
@@ -92,15 +149,17 @@ public class MarshalXMLServlet extends HttpServlet
         EntityTransaction transaction = em.getTransaction();
 
         try {
-            String command = retrieveCommand(request);
+            String command = ServletUtil.retrieveCommand(request);
             if (command == null) {
                 command = GET;
             }
             if (command.equals(OK)) {
-                ok(out);
+                ServletUtil.okXML(out);
             } else {
                 EmpEntitiesList result = getEmpEntitiesList(em, transaction);
-                if (command.equals(SAVE)) {
+                if (command.equals(DOMFILTER)) {
+                    filterByAverageSalary(out);
+                } else if (command.equals(SAVE)) {
                     marshalEmpEntitiesList(out, result, true);
                 } else {
                     marshalEmpEntitiesList(out, result, false);
