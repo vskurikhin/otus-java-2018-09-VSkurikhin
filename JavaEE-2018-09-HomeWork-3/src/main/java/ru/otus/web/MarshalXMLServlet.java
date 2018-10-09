@@ -4,7 +4,6 @@ package ru.otus.web;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import org.dom4j.dom.DOMDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,7 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-@WebServlet(urlPatterns = {"/marshal", "/marshal/*"})
+@WebServlet(urlPatterns = {"/xmlmarshal", "/xmlmarshal/*"})
 public class MarshalXMLServlet extends HttpServlet
 {
     public static final String EMPTY_EMPLOYEES =
@@ -51,7 +50,7 @@ public class MarshalXMLServlet extends HttpServlet
     private static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
-    private static final String DATA_FILE_LOCATION = "DataFileLocation";
+    private static final String DATA_FILE_LOCATION = "XMLDataFileLocation";
     private static final String SELECT_EMPL_ENTITY = "SELECT empl FROM EmpEntity empl";
     static final String GET = "get";
     static final String OK = "ok";
@@ -65,6 +64,7 @@ public class MarshalXMLServlet extends HttpServlet
         //noinspection unchecked
         ArrayList<EmpEntity> list = new ArrayList<EmpEntity>(q.getResultList());
         transaction.commit();
+
         return new EmpEntitiesList(list);
     }
 
@@ -96,30 +96,29 @@ public class MarshalXMLServlet extends HttpServlet
 
     private Transformer getTransformer() throws TransformerConfigurationException
     {
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-        return tFactory.newTransformer();
+        return TransformerFactory.newInstance().newTransformer();
     }
 
     private XPathExpression getXPathExpression(String expression) throws XPathExpressionException
     {
         XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();
+
         return xpath.compile(expression);
     }
 
     private NodeList getNodeList(Document document, XPathExpression expr)
     throws XPathExpressionException
     {
-        Object result = expr.evaluate(document, XPathConstants.NODESET);
-        return (NodeList) result;
+        return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
     }
 
     private void filterByAverageSalary(PrintWriter out)
     throws URISyntaxException, IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, TransformerException
+           XPathExpressionException, TransformerException
     {
-        String expression = "/employees/employee[" +
-                "@salary > (sum(/employees/employee/@salary) div count(/employees/employee/@salary))]";
+        String expression = "/employees/employee[@salary > " +
+               "(sum(/employees/employee/@salary) div count(/employees/employee/@salary))]";
         Document document = getDataFileDocument();
         // Use a Transformer for output
         Transformer transformer = getTransformer();

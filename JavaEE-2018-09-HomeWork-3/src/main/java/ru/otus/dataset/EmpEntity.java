@@ -6,14 +6,21 @@ package ru.otus.dataset;
 
 import lombok.Data;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
-import ru.otus.adapter.DataSetAdapter;
+import lombok.EqualsAndHashCode;
+import ru.otus.adapter.DeptEntityJsonAdapter;
+import ru.otus.adapter.DeptEntityXMLAdapter;
+import ru.otus.adapter.UserEntityJsonAdapter;
+import ru.otus.adapter.UserEntityXMLAdapter;
 
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "emp_registry")
 @XmlRootElement(name = "employee")
@@ -24,25 +31,32 @@ public class EmpEntity implements DataSet, Serializable
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     @XmlAttribute(required = true)
+    @JsonbProperty
     private long id;
 
     @Basic
     @Column(name = "firsh_name", nullable = false)
     @XmlElement(required = true)
+    @JsonbProperty("first-name")
     private String firstName;
 
     @Basic
     @Column(name = "second_name", nullable = false)
     @XmlElement(required = true)
+    @JsonbProperty("second-name")
     private String secondName;
 
     @Basic
     @Column(name = "sur_name", nullable = false)
+    @XmlElement(required = true)
+    @JsonbProperty("sur-name")
     private String surName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department", referencedColumnName = "id")
-    @XmlJavaTypeAdapter(DataSetAdapter.class)
+    @XmlElement(required = true)
+    @XmlJavaTypeAdapter(DeptEntityXMLAdapter.class)
+    @JsonbTypeAdapter(DeptEntityJsonAdapter.class)
     private DeptEntity department;
 
     @Basic
@@ -62,7 +76,8 @@ public class EmpEntity implements DataSet, Serializable
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @XmlJavaTypeAdapter(DataSetAdapter.class)
+    @XmlJavaTypeAdapter(UserEntityXMLAdapter.class)
+    @JsonbTypeAdapter(UserEntityJsonAdapter.class)
     private UserEntity user;
 
     @Override
