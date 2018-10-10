@@ -4,14 +4,8 @@ package ru.otus.web;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import ru.otus.dataset.DeptEntity;
-import ru.otus.dataset.EmpEntitiesList;
-import ru.otus.dataset.EmpEntity;
-import ru.otus.dataset.UserEntity;
+import ru.otus.dataset.*;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,8 +25,8 @@ public class MarshalJsonServlet extends HttpServlet
 {
     private static final String XML_DATA_FILE_LOCATION = "XMLDataFileLocation";
     private static final String JSON_DATA_FILE_LOCATION = "JsonDataFileLocation";
-    static final String GET = "get";
     static final String OK = "ok";
+    static final String GET = "get";
     static final String ODD = "odd";
 
     private InputStream getXMLDataFileInputStream() throws FileNotFoundException, URISyntaxException
@@ -53,14 +47,6 @@ public class MarshalJsonServlet extends HttpServlet
         return new PrintWriter(Paths.get(new URI(file)).toFile());
     }
 
-    private String getJsonFromEmpEntitiesList(EmpEntitiesList list)
-    {
-        JsonbConfig config = new JsonbConfig().withFormatting(true);
-        Jsonb jsonb = JsonbBuilder.create(config);
-
-        return jsonb.toJson(list);
-    }
-
     private EmpEntitiesList getEmpEntitiesListFromXMLDataFile()
     throws JAXBException, FileNotFoundException, URISyntaxException
     {
@@ -72,14 +58,11 @@ public class MarshalJsonServlet extends HttpServlet
         return (EmpEntitiesList) u.unmarshal(getXMLDataFileInputStream());
     }
 
-    public String converEmpEntityToJson(EmpEntity entity) {
-        JsonbConfig config = new JsonbConfig().withFormatting(true);
-        Jsonb jsonb = JsonbBuilder.create(config);
-        return jsonb.toJson(entity);
-    }
-
-    boolean isOdd(EmpEntity e) {
-        return ! (e.getId() % 2 == 0);
+    private String getJsonEmployeesFromJsonDataFile() throws FileNotFoundException, URISyntaxException
+    {
+        return new BufferedReader(new InputStreamReader(getJsonDataFileInputStream()))
+                .lines()
+                .collect(Collectors.joining("\n"));
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -93,13 +76,14 @@ public class MarshalJsonServlet extends HttpServlet
             if (command == null) {
                 command = GET;
             }
+
             if (command.equals(OK)) {
                 ServletUtil.okXML(out);
             } else if (command.equals(GET)) {
                 EmpEntitiesList list = getEmpEntitiesListFromXMLDataFile();
-                String json = getJsonFromEmpEntitiesList(list);
-
+                String json = EntityUtil.convertToJson(list);
                 out.println(json);
+
                 try (PrintWriter fout = getJsonDataFilePrintWriter()) {
                     fout.println(json);
                 } catch (IOException e2) {
@@ -107,30 +91,19 @@ public class MarshalJsonServlet extends HttpServlet
                 }
             } else if (command.equals(ODD)) {
                 String jsonEmployees = getJsonEmployeesFromJsonDataFile();
-                EmpEntitiesList list = getEmpEntitiesListFromJsonString(jsonEmployees);
+                EmpEntitiesList list = EntityUtil.convertFromJson(
+                        jsonEmployees, EmpEntitiesList.class
+                );
 
                 String oddJsonEmployees = list.getEmployees().stream()
-                        .filter(this::isOdd)
-                        .map(this::converEmpEntityToJson)
+                        .filter(EntityUtil::isOdd)
+                        .map(EntityUtil::convertToJson)
                         .reduce("", String::concat);
                 out.println("[" + oddJsonEmployees + "\n]\n");
             }
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-    }
-
-    private EmpEntitiesList getEmpEntitiesListFromJsonString(String jsonEmployees)
-    {
-        Jsonb jsonb = JsonbBuilder.create();
-        return jsonb.fromJson(jsonEmployees, EmpEntitiesList.class);
-    }
-
-    private String getJsonEmployeesFromJsonDataFile() throws FileNotFoundException, URISyntaxException
-    {
-        return new BufferedReader(new InputStreamReader(getJsonDataFileInputStream()))
-                            .lines()
-                            .collect(Collectors.joining("\n"));
     }
 }
 
