@@ -14,32 +14,21 @@ import java.io.PrintWriter;
 @WebServlet("/js")
 public class NashornServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
-//        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn"); // the same
         ScriptEngine engine = factory.getScriptEngine(new String[] { "-scripting" });
-
-        Bindings bindings = engine.createBindings();
-        bindings.put("count", 3);
-        bindings.put("name", "Vitalii");
-
-        try(PrintWriter pw = response.getWriter()){
-            String programForExecution = request.getParameter("text");
-            pw.println(engine.eval(programForExecution, bindings));
+        String programForExecution = request.getParameter("command");
+        try (PrintWriter pw = response.getWriter()) {
             Invocable invocable = (Invocable) engine;
-            engine.eval("function composeGreeting(name) {" +
-                "return 'Hello ' + name" +
-            "}");
-            pw.println(invocable.invokeFunction("composeGreeting", "Vitalii"));
-        }
-        catch(ScriptException e){
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+            engine.eval(programForExecution);
+            pw.println(invocable.invokeFunction("main"));
+        } catch (ScriptException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }
-        //var greeting='hello world';print(greeting);greeting
-        //readLine("What is your name? ")
-        //$EXEC("notepad")
-        //$ENV.PWD
-
     }
 }
