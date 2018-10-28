@@ -1,17 +1,16 @@
 package ru.otus.gwt.client;
 
-//import com.google.gwt.dom.client.Document;
-//import com.google.gwt.dom.client.Element;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
-import ru.otus.gwt.client.widget.LoginView;
-import ru.otus.gwt.client.service.ApplicationServiceAsync;
-//import ru.otus.gwt.client.widget.*;
-//
+import ru.otus.gwt.client.news.News;
+import ru.otus.gwt.client.service.LoginServiceAsync;
+import ru.otus.gwt.client.valutes.CBRValutes;
+
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
 public class Login extends Index
 {
-    private static ApplicationServiceAsync service = INSTANCE.getService();
+    private static LoginServiceAsync service = INSTANCE.getService();
     private TextBox loginTextBox;
     private PasswordTextBox passwordTextBox;
 
@@ -28,10 +27,15 @@ public class Login extends Index
         final DeckPanel deckPanel = new DeckPanel();
 
         RootPanel rootPanel = fillDeckPanel(deckPanel);
-        Label stubLabel = new Label("ok");
+        Label stubLabel = new Label("OK!!!");
+        deckPanel.add(stubLabel);
+        deckPanel.showWidget(5);
 
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.add(deckPanel);
+
+        menuAddClickHandler(deckPanel, "navigation-menu-", 5);
+        menuAddClickHandler(deckPanel, "aside-menu-", 4);
 
         rootPanel.add(vPanel);
     }
@@ -40,5 +44,7 @@ public class Login extends Index
     {
         super.initHeaderAndTitle();
         initMainContainer();
+        new News(GWT.getHostPageBaseURL() + "/rbcnews");
+        new CBRValutes(GWT.getHostPageBaseURL() + "/cbrforex");
     }
 }

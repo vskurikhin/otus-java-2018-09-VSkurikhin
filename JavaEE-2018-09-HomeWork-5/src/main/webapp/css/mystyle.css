@@ -154,6 +154,12 @@ aside ul {
     border: 0;
     width: 100%;
 }
+.valute {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
 
 aside ul li {
     display: list-item;
@@ -291,7 +297,7 @@ button.find {
     cursor: pointer;
 }
 
-button:before {
+button.find:before {
     content: "\f1a0";
     font-family: "Font Awesome 5 Brands";
     color: darkblue;
