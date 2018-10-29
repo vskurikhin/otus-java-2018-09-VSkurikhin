@@ -33,6 +33,17 @@
     min-width: 212px
 }
 
+.firstColumnWidth {
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.inputWidth {
+    width: 200px;
+}
+
 .tg {
     border-collapse: collapse;
     border-spacing:0;

@@ -3,10 +3,7 @@ package ru.otus.gwt.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.xhr.client.ReadyStateChangeHandler;
-import com.google.gwt.xhr.client.XMLHttpRequest;
 import ru.otus.gwt.client.news.News;
 import ru.otus.gwt.client.service.LoginServiceAsync;
 import ru.otus.gwt.client.valutes.CBRValutes;
@@ -52,13 +49,10 @@ public class Index implements EntryPoint
         //noinspection GWTStyleCheck
         deckPanel.setStyleName("deckpanel");
 
-        Label stubLabel = new Label("stub");
-
         deckPanel.add(new IndexView());
         deckPanel.add(new ContactsView());
         deckPanel.add(new BackformView());
         deckPanel.add(new ArchiveView());
-        deckPanel.add(stubLabel);
 
         RootPanel rootPanel = RootPanel.get("main-container");
 
@@ -68,7 +62,7 @@ public class Index implements EntryPoint
             rootPanel = RootPanel.get("login-container");
             if (null != rootPanel) {
                 deckPanel.add(new LoginView(service));
-                deckPanel.showWidget(5);
+                deckPanel.showWidget(4);
             } else {
                 rootPanel = RootPanel.get("inside-container");
             }
@@ -92,17 +86,6 @@ public class Index implements EntryPoint
 
         rootPanel.add(vPanel);
     }
-
-    private ReadyStateChangeHandler handler = xhr -> {
-        if (xhr.getReadyState() == XMLHttpRequest.DONE) {
-            // Window.alert("headers: " + headers);
-            if (xhr.getStatus() != 200) {
-                Window.alert("Ok XML document: " + xhr.getResponseText());
-            } else {
-                Window.alert("Could not parse XML document.");
-            }
-        }
-    };
 
     public void onModuleLoad()
     {
