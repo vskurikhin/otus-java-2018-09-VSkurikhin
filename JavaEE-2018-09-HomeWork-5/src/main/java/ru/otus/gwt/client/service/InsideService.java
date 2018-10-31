@@ -9,4 +9,8 @@ import java.util.List;
 @RemoteServiceRelativePath("InsideService")
 public interface InsideService extends RemoteService {
     List<Emp> getEmpsList();
+    void setEmpFirstName(long id, String value);
+    void setEmpSecondName(long id, String value);
+    void setEmpSurName(long id, String value);
+    void deleteEmp(long id);
 }

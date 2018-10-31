@@ -1,0 +1,30 @@
+.dataGridHeader {
+    margin: 2px;
+    color: #101 !important;
+    background-color: #ddd;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.dataGridFirstColumn {
+    background-color: #fafafa;
+    margin: 4px;
+    padding: 4px;
+}
+
+.dataGridLastColumn {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    alignment: right;
+}
+
+.dataGridCell {
+    margin: 0px;
+    padding: 3px;
+    font-size: 16px;
+}
+
+.dataGridWidget {
+    margin: 20px;
+}

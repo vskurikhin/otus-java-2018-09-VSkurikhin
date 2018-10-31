@@ -8,4 +8,12 @@ import java.util.List;
 public interface InsideServiceAsync
 {
     void getEmpsList(AsyncCallback<List<Emp>> async);
+
+    void setEmpFirstName(long id, String value, AsyncCallback<Void> async);
+
+    void setEmpSecondName(long id, String value, AsyncCallback<Void> async);
+
+    void setEmpSurName(long id, String value, AsyncCallback<Void> async);
+
+    void deleteEmp(long id, AsyncCallback<Void> async);
 }
