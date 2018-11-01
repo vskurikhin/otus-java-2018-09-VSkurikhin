@@ -12,6 +12,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import ru.otus.gwt.client.aside.News;
 import ru.otus.gwt.client.aside.CBRValutes;
 import ru.otus.gwt.client.service.InsideServiceAsync;
+import ru.otus.gwt.client.widget.AddView;
 import ru.otus.gwt.shared.Emp;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Inside extends Index
     private TextBox loginTextBox;
     private PasswordTextBox passwordTextBox;
     private DataGrid<Emp> table = new DataGrid<>();
+    private int deckIndexListView;
+    private int deckIndexAddView;
     final DeckPanel deckPanel = new DeckPanel();
 
     public String getLogin() {
@@ -31,6 +34,16 @@ public class Inside extends Index
 
     public String getPassword() {
         return passwordTextBox.getText();
+    }
+
+    public int getDeckIndexListView()
+    {
+        return deckIndexListView;
+    }
+
+    public int getDeckIndexAddView()
+    {
+        return deckIndexAddView;
     }
 
     public interface GwtCssDataGridResources extends DataGrid.Resources {
@@ -77,6 +90,7 @@ public class Inside extends Index
                     }
                 };
 
+                // create column for the table
                 Column<Emp, String> firstNameColumn = new Column<Emp, String>(new EditTextCell()) {
                     @Override
                     public String getValue(Emp emp) {
@@ -88,7 +102,7 @@ public class Inside extends Index
                     emp.getId(), value,
                     getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
                 ));
-
+                // create column for the table
                 Column<Emp, String> secondNameColumn = new Column<Emp, String>(new EditTextCell()) {
                     @Override
                     public String getValue(Emp emp) {
@@ -135,15 +149,34 @@ public class Inside extends Index
         return table;
     }
 
+    private <T> VerticalPanel inboxing(DataGrid<T> data) {
+        VerticalPanel vp = new VerticalPanel();
+        Button addButtun = new Button();
+
+        addButtun.setTitle("add");
+        addButtun.setText("add new");
+        addButtun.addClickHandler(event -> deckPanel.showWidget(getDeckIndexAddView()));
+
+        vp.setHorizontalAlignment(TextColumn.ALIGN_CENTER);
+        vp.add(data);
+        vp.add(addButtun);
+
+        return vp;
+    }
+
     private void initMainContainer()
     {
-
         RootPanel rootPanel = fillDeckPanel(deckPanel);
 
-        deckPanel.add(this::drawTable);
-        deckPanel.showWidget(4);
+        deckPanel.add(inboxing(drawTable()));
+        deckIndexListView = deckPanel.getWidgetCount() - 1;
+        deckPanel.showWidget(getDeckIndexListView());
+
+        deckPanel.add(new AddView(service));
+        deckIndexAddView = deckPanel.getWidgetCount() - 1;
 
         VerticalPanel vPanel = new VerticalPanel();
+        vPanel.setHorizontalAlignment(TextColumn.ALIGN_CENTER);
         vPanel.add(deckPanel);
 
         menuAddClickHandler(deckPanel, "navigation-menu-", 5);

@@ -7,6 +7,7 @@ import ru.otus.gwt.client.service.LoginServiceAsync;
 import ru.otus.gwt.client.service.InsideServiceAsync;
 import ru.otus.gwt.client.text.ApplicationConstants;
 import ru.otus.gwt.client.validation.ValidatorFactory.GwtValidator;
+import ru.otus.gwt.client.widget.AddView.AddViewUiBinder;
 import ru.otus.gwt.client.widget.LoginView.LoginViewUiBinder;
 import ru.otus.gwt.client.widget.image.ApplicationImages;
 
@@ -19,6 +20,7 @@ public interface ApplicationInjector extends Ginjector {
     InsideServiceAsync getInsideService();
     ApplicationConstants getConstants();
     LoginViewUiBinder getLoginViewUiBinder();
+    AddViewUiBinder getAddViewUiBinder();
     GwtValidator getValidator();
     ApplicationImages getImages();
 }

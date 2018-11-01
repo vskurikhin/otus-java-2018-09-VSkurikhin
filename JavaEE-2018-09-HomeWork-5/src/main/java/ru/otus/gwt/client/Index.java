@@ -14,6 +14,36 @@ import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 public class Index implements EntryPoint
 {
     private static LoginServiceAsync service = INSTANCE.getLoginService();
+    private int deckIndexIndexView;
+    private int deckIndexContactsView;
+    private int deckIndexBackformView;
+    private int deckIndexArchiveView;
+    private int deckIndexLoginView;
+
+    public int getDeckIndexIndexView()
+    {
+        return deckIndexIndexView;
+    }
+
+    public int getDeckIndexContactsView()
+    {
+        return deckIndexContactsView;
+    }
+
+    public int getDeckIndexBackformView()
+    {
+        return deckIndexBackformView;
+    }
+
+    public int getDeckIndexArchiveView()
+    {
+        return deckIndexArchiveView;
+    }
+
+    public int getDeckIndexLoginView()
+    {
+        return deckIndexLoginView;
+    }
 
     protected void initHeaderAndTitle()
     {
@@ -48,21 +78,30 @@ public class Index implements EntryPoint
     {
         //noinspection GWTStyleCheck
         deckPanel.setStyleName("deckpanel");
+        deckPanel.getElement().setId("main-deck-panel");
 
         deckPanel.add(new IndexView());
+        deckIndexIndexView = deckPanel.getWidgetCount() - 1;
+
         deckPanel.add(new ContactsView());
+        deckIndexContactsView = deckPanel.getWidgetCount() - 1;
+
         deckPanel.add(new BackformView());
+        deckIndexBackformView = deckPanel.getWidgetCount() - 1;
+
         deckPanel.add(new ArchiveView());
+        deckIndexArchiveView = deckPanel.getWidgetCount() - 1;
 
         RootPanel rootPanel = RootPanel.get("main-container");
 
         if (null != rootPanel) {
-            deckPanel.showWidget(0);
+            deckPanel.showWidget(getDeckIndexIndexView());
         } else {
             rootPanel = RootPanel.get("login-container");
             if (null != rootPanel) {
                 deckPanel.add(new LoginView(service));
-                deckPanel.showWidget(4);
+                deckIndexLoginView = deckPanel.getWidgetCount() - 1;
+                deckPanel.showWidget(getDeckIndexLoginView());
             } else {
                 rootPanel = RootPanel.get("inside-container");
             }

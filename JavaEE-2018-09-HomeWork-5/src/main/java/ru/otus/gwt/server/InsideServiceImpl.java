@@ -7,8 +7,6 @@ import ru.otus.dataset.EmpEntity;
 import ru.otus.gwt.client.service.InsideService;
 import ru.otus.gwt.shared.Emp;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
-
 
     // private static final EntityManagerFactory emf =
     //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
@@ -50,6 +47,35 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         } finally {
             em.close();
         }
+    }
+
+    @Override
+    public void addNewEmp(Emp emp)
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            EmpEntity entity = new EmpEntity();
+
+            entity.setId(-1L);
+            entity.setFirstName(emp.getFirstName());
+            entity.setSecondName(emp.getSecondName());
+            entity.setSurName(emp.getSurName());
+
+            em.merge(entity);
+            transaction.commit();
+        }
+        catch (Exception e) {
+            LOGGER.debug(e);
+            transaction.rollback();
+            throw new RuntimeException(e);
+        }
+        finally {
+            em.close();
+        }
+
     }
 
     private void queryUpdate(long id, String query, String value)
