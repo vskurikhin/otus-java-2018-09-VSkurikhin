@@ -20,18 +20,17 @@ import java.io.Serializable;
 public class DeptEntity implements DataSet, Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     private long id;
 
     @Basic
-    @Column(name = "pid")
+    @Column(name = "pid", nullable = false)
     @XmlAttribute
     private long parentId; // recursion
 
     @Basic
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     @XmlElement(required = true)
     private String title;
 

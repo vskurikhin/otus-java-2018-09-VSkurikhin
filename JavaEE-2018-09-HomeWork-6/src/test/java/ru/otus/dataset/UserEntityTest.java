@@ -57,6 +57,7 @@ public class UserEntityTest
     {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
+        entity.setId(1L);
         entity.setName("setName");
         entity.setPassword("setPassword");
         entityManager.persist(entity);

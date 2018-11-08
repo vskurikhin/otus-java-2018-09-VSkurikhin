@@ -1,5 +1,9 @@
 package ru.otus.gwt.client;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -134,3 +138,7 @@ public class Welcome implements EntryPoint
         new CBRValutes(GWT.getHostPageBaseURL() + "/cbrforex");
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

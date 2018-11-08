@@ -1,4 +1,9 @@
 package ru.otus.gwt.client.aside;
+
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
@@ -64,3 +69,7 @@ public class Valute
         return value;
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

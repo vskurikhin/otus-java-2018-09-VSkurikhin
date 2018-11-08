@@ -27,13 +27,12 @@ import java.io.Serializable;
 public class UserEntity implements DataSet, Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     private long id;
 
     @Basic
-    @Column(name = "login")
+    @Column(name = "login", nullable = false)
     @XmlAttribute(required = true)
     private String login;
 

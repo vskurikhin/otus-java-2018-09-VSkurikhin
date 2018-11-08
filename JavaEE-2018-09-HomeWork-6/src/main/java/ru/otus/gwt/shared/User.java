@@ -24,3 +24,7 @@ public class User implements IsSerializable
     @Size(min = 4, message = "Password must contain at least 4 characters.")
     private String password;
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

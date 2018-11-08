@@ -14,7 +14,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class LoadTables {
+public class LoadTables
+{
     private final Connection connection = ConnectionHelper.getConnection(
         DBConf.dbName, DBConf.userName, DBConf.password
     );
@@ -25,7 +26,8 @@ public class LoadTables {
         this.tableName = tableName;
     }
 
-    public void readInputStream(Scanner inputStream) throws SQLException {
+    public void readInputStream(Scanner inputStream) throws SQLException
+    {
         Executor exec = new Executor(connection);
 
         while (inputStream.hasNextLine()) {
@@ -57,7 +59,8 @@ public class LoadTables {
         }
     }
 
-    public void loadTables() {
+    public void loadTables()
+    {
         try {
             connection.setAutoCommit(false);
             readInputStream(new Scanner(System.in));
@@ -68,7 +71,8 @@ public class LoadTables {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         if (args.length != 1) {
             System.out.println("For work this loader need one argument with table name.");
         } else if (args[0] == null) {

@@ -1,5 +1,9 @@
 package ru.otus.gwt.client.widget;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -118,3 +122,7 @@ public class LoginView extends Composite implements IsWidget
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -12,8 +16,8 @@ import java.io.PrintWriter;
 import java.util.stream.IntStream;
 
 @WebServlet("/rbcnews")
-public class NewsServlet extends HttpServlet {
-
+public class NewsServlet extends HttpServlet
+{
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
         Document doc;
@@ -39,3 +43,7 @@ public class NewsServlet extends HttpServlet {
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

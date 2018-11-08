@@ -1,5 +1,9 @@
 package ru.otus.gwt.client.widget;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,6 +36,15 @@ public class AddView extends Composite implements IsWidget
     TextBox surNameTextField;
 
     @UiField
+    TextBox jobTextField;
+
+    @UiField
+    TextBox cityTextField;
+
+    @UiField
+    TextBox ageTextField;
+
+    @UiField
     HorizontalPanel firstNamePanel;
 
     @UiField
@@ -39,6 +52,15 @@ public class AddView extends Composite implements IsWidget
 
     @UiField
     HorizontalPanel surNamePanel;
+
+    @UiField
+    HorizontalPanel jobPanel;
+
+    @UiField
+    HorizontalPanel cityPanel;
+
+    @UiField
+    HorizontalPanel agePanel;
 
     private Inside inside;
     private InsideServiceAsync service;
@@ -53,7 +75,9 @@ public class AddView extends Composite implements IsWidget
     void clickHandler(ClickEvent evt)
     {
         Emp emp = new Emp(
-            0, firstNameTextField.getValue(), secondNameTextField.getValue(), surNameTextField.getValue()
+            0, firstNameTextField.getValue(), secondNameTextField.getValue(), surNameTextField.getValue(),
+            jobTextField.getValue(), cityTextField.getValue(), ageTextField.getValue()
+
         );
         service.addNewEmp(emp, new AsyncCallback<Void>() {
             @Override
@@ -78,3 +102,7 @@ public class AddView extends Composite implements IsWidget
         this.inside = inside;
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

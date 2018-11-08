@@ -18,9 +18,9 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode
-@XmlRootElement(name="employees")
+@XmlRootElement(name = "employees")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EmpEntitiesList implements Serializable
+public class EmpEntitiesList implements Serializable, EntitiesList<EmpEntity>
 {
     @XmlElement(name = "employee")
     @JsonbProperty("employees")
@@ -43,6 +43,7 @@ public class EmpEntitiesList implements Serializable
         this.employees = employees;
     }
 
+    @Override
     public void add(EmpEntity emp) {
         employees.add(emp);
     }

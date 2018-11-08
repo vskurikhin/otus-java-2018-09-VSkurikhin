@@ -3,12 +3,17 @@ package ru.otus.dataset;
 import org.junit.*;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -77,6 +82,27 @@ public class EmpEntityTest
         EmpEntity empFind = entityManager.find(EmpEntity.class, 1L);
         assertNotNull(empFind);
     }
+
+    @Test
+    public void persistEmpEntitySearch()
+    {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        EmpEntity emp = getTestEmpEntity();
+        entityManager.persist(emp);
+        transaction.commit();
+
+        Query q = entityManager.createQuery(
+        "SELECT e FROM EmpEntity e WHERE (e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name) "
+        );
+        q.setParameter("name", "%" + "first" + "%");
+        //noinspection unchecked
+        ArrayList<EmpEntity> list = new ArrayList<>(q.getResultList());
+        System.out.println("list = " + list);
+    }
+
+
+
 
     @Test
     public void marshallEmpEntity() throws JAXBException

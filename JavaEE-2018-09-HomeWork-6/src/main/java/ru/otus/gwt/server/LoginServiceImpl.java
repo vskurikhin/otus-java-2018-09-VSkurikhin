@@ -1,5 +1,9 @@
 package ru.otus.gwt.server;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,3 +40,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

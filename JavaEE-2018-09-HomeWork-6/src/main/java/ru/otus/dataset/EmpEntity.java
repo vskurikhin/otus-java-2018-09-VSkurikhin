@@ -5,6 +5,7 @@ package ru.otus.dataset;
  */
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -13,11 +14,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
-import lombok.EqualsAndHashCode;
-import ru.otus.adapter.DeptEntityJsonAdapter;
-import ru.otus.adapter.DeptEntityXMLAdapter;
-import ru.otus.adapter.UserEntityJsonAdapter;
-import ru.otus.adapter.UserEntityXMLAdapter;
+import ru.otus.adapter.*;
 
 @Data
 @EqualsAndHashCode
@@ -55,7 +52,7 @@ public class EmpEntity implements DataSet, Serializable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department", referencedColumnName = "id")
     @XmlElement(required = true)
-    @XmlJavaTypeAdapter(DeptEntityXMLAdapter.class)
+    @XmlJavaTypeAdapter(DeptEntityTypeXMLAdapter.class)
     @JsonbTypeAdapter(DeptEntityJsonAdapter.class)
     private DeptEntity department;
 
@@ -76,9 +73,14 @@ public class EmpEntity implements DataSet, Serializable
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @XmlJavaTypeAdapter(UserEntityXMLAdapter.class)
+    @XmlJavaTypeAdapter(UserEntityTypeXMLAdapter.class)
     @JsonbTypeAdapter(UserEntityJsonAdapter.class)
     private UserEntity user;
+
+    @Basic
+    @Column(name = "age")
+    @XmlAttribute
+    private Long age;
 
     @Override
     public String getName()

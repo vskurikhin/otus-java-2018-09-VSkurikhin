@@ -24,10 +24,12 @@ import ru.otus.dataset.UserEntity;
 
 import java.util.EnumSet;
 
-public class CreateTables {
+public class CreateTables
+{
     public static final String DB_SCHEMA_DDL = "db-schema.hibernate5.ddl";
 
-    public static Metadata getMetadata(StandardServiceRegistryBuilder builder) {
+    public static Metadata getMetadata(StandardServiceRegistryBuilder builder)
+    {
         StandardServiceRegistry registry = builder.build();
         MetadataSources sources = new MetadataSources(registry);
 
@@ -39,7 +41,8 @@ public class CreateTables {
         return sources.buildMetadata();
     }
 
-    public static void createTables() {
+    public static void createTables()
+    {
         try {
             StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
             builder.configure("createSchema.hibernate.cfg.xml");
@@ -57,7 +60,8 @@ public class CreateTables {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         createTables();
     }
 }

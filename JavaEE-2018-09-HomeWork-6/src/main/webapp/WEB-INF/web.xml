@@ -25,6 +25,17 @@
         <welcome-file>redirect.jsp</welcome-file>
     </welcome-file-list>
 
+    <!--<servlet>-->
+        <!--<servlet-name>InitialServlet</servlet-name>-->
+        <!--<servlet-class>ru.otus.web.InitialServlet</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>InitialServlet</servlet-name>-->
+        <!--<url-pattern>/init</url-pattern>-->
+    <!--</servlet-mapping>-->
+
+
     <servlet>
         <servlet-name>LoginService</servlet-name>
         <servlet-class>ru.otus.gwt.server.LoginServiceImpl</servlet-class>

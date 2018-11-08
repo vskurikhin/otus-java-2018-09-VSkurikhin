@@ -33,6 +33,18 @@ public class Emp implements IsSerializable
     @NotNull
     @Size(min = 2, message = "Surname must contain at least 2 characters.")
     private String surName;
+
+    @NotNull
+    @Size(min = 2, message = "Job must contain at least 2 characters.")
+    private String job;
+
+    @NotNull
+    @Size(min = 2, message = "City must contain at least 2 characters.")
+    private String city;
+
+    @NotNull
+    @Size(min = 2, message = "Age must contain at least 2 characters.")
+    private String age;
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

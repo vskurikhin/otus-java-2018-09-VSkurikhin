@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
@@ -91,3 +95,7 @@ public class BrowsersVersionFilter extends HttpFilter
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

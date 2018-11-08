@@ -14,12 +14,14 @@ import ru.otus.db.Executor;
 
 import java.sql.Connection;
 
-public class CreateFunction {
+public class CreateFunction
+{
     private static final Connection connection = ConnectionHelper.getConnection(
         DBConf.dbName, DBConf.userName, DBConf.password
     );
 
-    public static void createFunction() {
+    public static void createFunction()
+    {
         try {
             connection.setAutoCommit(false);
             Executor exec = new Executor(connection);
@@ -34,7 +36,8 @@ public class CreateFunction {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         createFunction();
     }
 }

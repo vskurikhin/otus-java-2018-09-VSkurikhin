@@ -1,11 +1,16 @@
 package ru.otus.gwt.server;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.dataset.EmpEntity;
 import ru.otus.gwt.client.service.InsideService;
 import ru.otus.gwt.shared.Emp;
+import ru.otus.gwt.shared.Search;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,7 +32,10 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class.getName());
 
     private Emp convertEmpEntityToEmp(EmpEntity entity) {
-        return new Emp(entity.getId(), entity.getFirstName(), entity.getSecondName(), entity.getSurName());
+        return new Emp(
+            entity.getId(), entity.getFirstName(), entity.getSecondName(), entity.getSurName(),
+            entity.getJob(), entity.getCity(), entity.getAge().toString()
+        );
     }
 
     @Override
@@ -63,6 +71,9 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
             entity.setFirstName(emp.getFirstName());
             entity.setSecondName(emp.getSecondName());
             entity.setSurName(emp.getSurName());
+            entity.setJob(emp.getJob());
+            entity.setCity(emp.getCity());
+            entity.setAge(Long.parseLong(emp.getAge()));
 
             em.merge(entity);
             transaction.commit();
@@ -142,4 +153,89 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         }
 
     }
+
+    @Override
+    public List<Emp> searchEmp(Search search)
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        ArrayList<EmpEntity> list = null;
+
+        try {
+            transaction.begin();
+            String sql = null;
+
+            if (search.getFio() != null) {
+                sql = "SELECT e FROM EmpEntity e WHERE (e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
+                if (search.getJob() != null) {
+                    sql += " AND e.job LIKE :job";
+                }
+                if (search.getCity() != null) {
+                    sql += " AND e.city LIKE :city";
+                }
+                if (search.getAge() != null) {
+                    sql += " AND e.age = :age";
+                }
+                Query q = em.createQuery(sql);
+
+                q.setParameter("name", "%" + search.getFio() + "%");
+                if (search.getJob() != null)
+                    q.setParameter("job", "%" + search.getJob() + "%");
+                if (search.getCity() != null)
+                    q.setParameter("city", "%" + search.getCity() + "%");
+                if (search.getAge() != null)
+                    q.setParameter("age",  Long.parseLong(search.getAge()) );
+
+                //noinspection unchecked
+                list = new ArrayList<>(q.getResultList());
+            }
+            else if (search.getJob() != null) {
+                sql = "SELECT e FROM EmpEntity e WHERE e.job LIKE :job";
+                Query q = em.createQuery(sql);
+
+                q.setParameter("job", "%" + search.getJob() + "%");
+                if (search.getCity() != null) {
+                    sql += " AND e.city LIKE :city";
+                }
+                if (search.getAge() != null) {
+                    sql += " AND e.age = :age";
+                }
+
+                if (search.getCity() != null)
+                    q.setParameter("city", "%" + search.getCity() + "%");
+                if (search.getAge() != null)
+                    q.setParameter("age",  Long.parseLong(search.getAge()) );
+
+                //noinspection unchecked
+                list = new ArrayList<>(q.getResultList());
+            }
+            else if (search.getCity() != null) {
+                sql = "SELECT e FROM EmpEntity e WHERE e.city LIKE :city";
+                Query q = em.createQuery(sql);
+
+                q.setParameter("city", "%" + search.getCity() + "%");
+                if (search.getAge() != null) {
+                    sql += " AND e.age = :age";
+                }
+
+                if (search.getAge() != null)
+                    q.setParameter("age",  Long.parseLong(search.getAge()) );
+
+                //noinspection unchecked
+                list = new ArrayList<>(q.getResultList());
+            }
+            else {
+                list = new ArrayList<>();
+            }
+
+            transaction.commit();
+            return list.stream().map(this::convertEmpEntityToEmp).collect(Collectors.toList());
+        } finally {
+            em.close();
+        }
+    }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

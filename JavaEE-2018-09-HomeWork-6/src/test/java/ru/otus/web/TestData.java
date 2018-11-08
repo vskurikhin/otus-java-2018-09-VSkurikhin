@@ -27,7 +27,7 @@ public class TestData
         "    <firstName>" + FirstName1 + "</firstName>\n" +
         "    <secondName>" + SecondName1 + "</secondName>\n" +
         "    <surName>" + SurName1 + "</surName>\n" +
-        "    <department>" + Department1 + "</department>\n" +
+        "    <department id='0'>" + Department1 + "</department>\n" +
         "    <city>" + City1 +  "</city>\n" +
         "    <job>" + Job1 + "</job>\n" +
         "  </employee>\n" +
@@ -35,7 +35,7 @@ public class TestData
         "    <firstName>" + FirstName2 + "</firstName>\n" +
         "    <secondName>" + SecondName2 + "</secondName>\n" +
         "    <surName>" + SurName2 + "</surName>\n" +
-        "    <department>" + Department2 + "</department>\n" +
+        "    <department id='0'>" + Department2 + "</department>\n" +
         "    <city>" + City2 +  "</city>\n" +
         "    <job>" + Job2 + "</job>\n" +
         "  </employee>\n" +

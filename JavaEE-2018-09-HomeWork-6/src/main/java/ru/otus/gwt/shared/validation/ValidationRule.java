@@ -7,7 +7,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
 
-public class ValidationRule {
+public class ValidationRule
+{
 
     public static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -19,3 +20,7 @@ public class ValidationRule {
         return validator.validate(user);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

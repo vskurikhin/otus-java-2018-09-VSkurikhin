@@ -1,7 +1,6 @@
 package ru.otus.utils;
 
 import org.junit.Test;
-import ru.otus.web.Authentication;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -14,5 +13,7 @@ public class AuthenticationTest
     {
         String pass = "funt";
         System.out.println(" Authentication.encodeSHA256(pass) = " + Authentication.encodeSHA256(pass));
+        Long l = 1L;
+        System.out.println("l = " + l.toString());
     }
 }

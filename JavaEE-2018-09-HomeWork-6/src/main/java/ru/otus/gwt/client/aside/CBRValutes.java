@@ -1,5 +1,9 @@
 package ru.otus.gwt.client.aside;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
@@ -48,7 +52,8 @@ public class CBRValutes
         { /* None */ }
     };
 
-    public CBRValutes(String url) {
+    public CBRValutes(String url)
+    {
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 
         try {
@@ -58,3 +63,7 @@ public class CBRValutes
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

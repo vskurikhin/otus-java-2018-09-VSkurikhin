@@ -1,5 +1,9 @@
 package ru.otus.gwt.client;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.core.client.GWT;
@@ -13,6 +17,7 @@ import ru.otus.gwt.client.aside.News;
 import ru.otus.gwt.client.aside.CBRValutes;
 import ru.otus.gwt.client.service.InsideServiceAsync;
 import ru.otus.gwt.client.widget.AddView;
+import ru.otus.gwt.client.widget.SearchView;
 import ru.otus.gwt.shared.Emp;
 
 import java.util.ArrayList;
@@ -29,6 +34,7 @@ public class Inside extends Welcome
     private DataGrid<Emp> table = new DataGrid<>();
     private int deckIndexListView;
     private int deckIndexAddView;
+    private int deckIndexSearchView;
     final DeckPanel deckPanel = new DeckPanel();
     ListDataProvider<Emp> model = new ListDataProvider<>(new ArrayList<>());
 
@@ -48,6 +54,11 @@ public class Inside extends Welcome
     public int getDeckIndexAddView()
     {
         return deckIndexAddView;
+    }
+
+    public int getDeckIndexSearchView()
+    {
+        return deckIndexSearchView;
     }
 
     public interface GwtCssDataGridResources extends DataGrid.Resources {
@@ -85,18 +96,104 @@ public class Inside extends Welcome
         }
     }
 
-    private DataGrid<Emp> drawTable()
+    private void drawTable(List<Emp> result)
+    {
+        model.setList(result);
+        table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
+
+        TextColumn<Emp> idColumn = new TextColumn<Emp>() {
+            @Override
+            public String getValue(Emp object) {
+                return Long.toString(object.getId());
+            }
+        };
+        idColumn.setCellStyleNames("text-align-right padding-right-5px");
+
+        Column<Emp, String> firstNameColumn = new Column<Emp, String>(new EditTextCell()) {
+            @Override
+            public String getValue(Emp emp) {
+                return emp.getFirstName();
+            }
+        };
+
+        firstNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
+                emp.getId(), value,
+                getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
+        ));
+
+        Column<Emp, String> secondNameColumn = new Column<Emp, String>(new EditTextCell()) {
+            @Override
+            public String getValue(Emp emp) {
+                return emp.getSecondName();
+            }
+        };
+        secondNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
+                emp.getId(), value,
+                getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
+        ));
+
+        TextColumn<Emp> surNameColumn = new TextColumn<Emp>() {
+            @Override
+            public String getValue(Emp object) {
+                return object.getSurName();
+            }
+        };
+
+        TextColumn<Emp> jobColumn = new TextColumn<Emp>() {
+            @Override
+            public String getValue(Emp object) {
+                return object.getJob();
+            }
+        };
+
+        TextColumn<Emp> cityColumn = new TextColumn<Emp>() {
+            @Override
+            public String getValue(Emp object) {
+                return object.getCity();
+            }
+        };
+
+        TextColumn<Emp> ageColumn = new TextColumn<Emp>() {
+            @Override
+            public String getValue(Emp object) {
+                return object.getAge();
+            }
+        };
+
+        Column<Emp, String> deleteBtn = new Column<Emp, String>( new ButtonCell()) {
+            @Override
+            public String getValue(Emp c) {
+                return "x";
+            }
+        };
+        deleteBtn.setCellStyleNames("text-align-right padding-right-1px");
+
+        table.addColumn(idColumn, "Id");
+        table.addColumn(firstNameColumn, "First Name");
+        table.addColumn(secondNameColumn, "Second Name");
+        table.addColumn(surNameColumn, "Surname");
+        table.addColumn(jobColumn, "Job");
+        table.addColumn(cityColumn, "City");
+        table.addColumn(ageColumn, "Age");
+        table.addColumn(deleteBtn, "");
+
+        table.setColumnWidth(idColumn, "32px");
+        table.setColumnWidth(ageColumn, "32px");
+        table.setColumnWidth(deleteBtn, "16px");
+        table.setRowCount(result.size());
+        table.setHeight((result.size() * 24 + 28 ) + "px");
+
+        doResize();
+
+        table.setTableWidth(100, Unit.PCT);
+        table.setMinimumTableWidth(759, Unit.PX);
+        model.addDataDisplay(table);
+    }
+
+    private DataGrid<Emp> getEmpListTable()
     {
         Inside localInside = this;
         service.getEmpsList(new AsyncCallback<List<Emp>>() {
-            private void update(int index, Emp emp, String value)
-            {
-                service.deleteEmp(
-                        emp.getId(), getEmptyAsyncCallback(" Error delete id: " + emp.getId(), Void.class)
-                );
-                localInside.refresh();
-            }
-
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert(caught.getLocalizedMessage());
@@ -105,74 +202,9 @@ public class Inside extends Welcome
             @Override
             public void onSuccess(List<Emp> result)
             {
-                // final ListDataProvider<Emp> model = new ListDataProvider<>(result);
-                model.setList(result);
-                table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
-
-                TextColumn<Emp> idColumn = new TextColumn<Emp>() {
-                    @Override
-                    public String getValue(Emp object) {
-                        return Long.toString(object.getId());
-                    }
-                };
-                idColumn.setCellStyleNames("text-align-right padding-right-5px");
-
-                Column<Emp, String> firstNameColumn = new Column<Emp, String>(new EditTextCell()) {
-                    @Override
-                    public String getValue(Emp emp) {
-                        return emp.getFirstName();
-                    }
-                };
-
-                firstNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
-                    emp.getId(), value,
-                    getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
-                ));
-
-                Column<Emp, String> secondNameColumn = new Column<Emp, String>(new EditTextCell()) {
-                    @Override
-                    public String getValue(Emp emp) {
-                        return emp.getSecondName();
-                    }
-                };
-                secondNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
-                    emp.getId(), value,
-                    getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
-                ));
-
-                TextColumn<Emp> surNameColumn = new TextColumn<Emp>() {
-                    @Override
-                    public String getValue(Emp object) {
-                        return object.getSurName();
-                    }
-                };
-
-                Column<Emp, String> deleteBtn = new Column<Emp, String>( new ButtonCell()) {
-                    @Override
-                    public String getValue(Emp c) {
-                        return "x";
-                    }
-                };
-                deleteBtn.setFieldUpdater(this::update);
-                deleteBtn.setCellStyleNames("text-align-right padding-right-1px");
-
-                table.addColumn(idColumn, "Id");
-                table.addColumn(firstNameColumn, "First Name");
-                table.addColumn(secondNameColumn, "Second Name");
-                table.addColumn(surNameColumn, "Surname");
-                table.addColumn(deleteBtn, "");
-
-                table.setColumnWidth(idColumn, "20px");
-                table.setColumnWidth(deleteBtn, "16px");
-                table.setRowCount(result.size());
-                table.setHeight((result.size() * 24 + 28 ) + "px");
-
-                doResize();
-
-                table.setTableWidth(100, Unit.PCT);
-                table.setMinimumTableWidth(759, Unit.PX);
-                model.addDataDisplay(table);
+                drawTable(result);
             }
+
         });
 
         return table;
@@ -181,21 +213,28 @@ public class Inside extends Welcome
     private <T> VerticalPanel inboxing(DataGrid<T> data) {
         VerticalPanel vp = new VerticalPanel();
         Button addButtun = new Button();
+        Button refreshButtun = new Button();
+        Button searchButtun = new Button();
 
         addButtun.setTitle("add");
         addButtun.setText("add new");
         addButtun.addClickHandler(event -> deckPanel.showWidget(getDeckIndexAddView()));
 
-        Button refreshButtun = new Button();
-
         refreshButtun.setTitle("refresh");
         refreshButtun.setText("refresh");
         refreshButtun.addClickHandler(event -> refresh());
 
+        searchButtun.setTitle("search");
+        searchButtun.setText("search");
+        searchButtun.addClickHandler(event -> deckPanel.showWidget(getDeckIndexSearchView()));
+
         vp.setHorizontalAlignment(TextColumn.ALIGN_CENTER);
         vp.add(data);
-        vp.add(addButtun);
-        vp.add(refreshButtun);
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(addButtun);
+        hp.add(refreshButtun);
+        hp.add(searchButtun);
+        vp.add(hp);
 
         return vp;
     }
@@ -216,13 +255,26 @@ public class Inside extends Welcome
             @Override
             public void onSuccess(List<Emp> result)
             {
-                model.setList(result);
-                table.setRowCount(result.size());
-                table.setHeight((result.size() * 24 + 28 ) + "px");
-                model.refresh();
-                table.redraw();
+                showResult(result);
             }
         });
+    }
+
+    public void showResult(List<Emp> result)
+    {
+        model.setList(result);
+        table.setRowCount(result.size());
+        table.setHeight((result.size() * 24 + 28 ) + "px");
+        model.refresh();
+        table.redraw();
+    }
+
+    public void showSearchResult(List<Emp> result) {
+        model.setList(new ArrayList<>());
+        model.refresh();
+        table.redraw();
+        showResult(result);
+        deckPanel.showWidget(getDeckIndexListView());
     }
 
     public void showDataGrid() {
@@ -233,12 +285,15 @@ public class Inside extends Welcome
     {
         RootPanel rootPanel = fillDeckPanel(deckPanel);
 
-        deckPanel.add(inboxing(drawTable()));
+        deckPanel.add(inboxing(getEmpListTable()));
         deckIndexListView = deckPanel.getWidgetCount() - 1;
         deckPanel.showWidget(getDeckIndexListView());
 
         deckPanel.add(new AddView(service, this));
         deckIndexAddView = deckPanel.getWidgetCount() - 1;
+
+        deckPanel.add(new SearchView(service, this));
+        deckIndexSearchView = deckPanel.getWidgetCount() - 1;
 
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.setHorizontalAlignment(TextColumn.ALIGN_CENTER);
@@ -259,3 +314,7 @@ public class Inside extends Welcome
         Window.addResizeHandler(event -> doResize());
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

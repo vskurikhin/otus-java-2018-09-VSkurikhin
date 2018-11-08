@@ -63,7 +63,8 @@ public class DeptEntityTest
     {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        entity.setParentId(1L);
+        entity.setId(1L);
+        entity.setParentId(0L);
         entity.setTitle("title");
         entityManager.persist(entity);
         transaction.commit();

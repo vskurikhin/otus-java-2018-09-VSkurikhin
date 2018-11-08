@@ -4,7 +4,7 @@
 #### Группа 2018-09
 ##### Виктор Скурихин (Victor Skurikhin)
 
-### Домашнее задание 5
+### Домашнее задание 6
  * Настроки GlassFish:
    * Configurations -> server-config -> Security -> Realms
      Создать `jdbc-realm` со следующими параметрами:
