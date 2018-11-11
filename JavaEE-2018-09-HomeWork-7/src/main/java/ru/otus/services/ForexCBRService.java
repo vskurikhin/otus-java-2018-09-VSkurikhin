@@ -4,7 +4,6 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.XML;

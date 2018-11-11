@@ -6,20 +6,20 @@ package ru.otus.services;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.*;
-import ru.otus.models.DeptEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.sql.DataSource;
+
+import static ru.otus.services.TestDbJPAUtils.persistDeptEntity;
 
 public class DirectoryJDBCServiceTest
 {
     public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
     private static final String JDBC_URL = "jdbc:h2:mem:test";
     private static EntityManagerFactory emf;
-    private EntityManager entityManager;
+    private EntityManager em;
 
     DirectoryJDBCService service;
 
@@ -34,26 +34,14 @@ public class DirectoryJDBCServiceTest
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     }
 
-    private void persist(long id, long pid, String title)
-    {
-        DeptEntity entity = new DeptEntity();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entity.setId(id);
-        entity.setParentId(pid);
-        entity.setTitle(title);
-        entityManager.persist(entity);
-        transaction.commit();
-    }
-
     @Before
     public void setUp() throws Exception
     {
-        entityManager = emf.createEntityManager();
+        em = emf.createEntityManager();
 
-        persist(1L, 0L, "title1");
-        persist(2L, 1L, "title2");
-        persist(3L, 1L, "title3");
+        persistDeptEntity(em, 1L, 0L, "title1");
+        persistDeptEntity(em, 2L, 1L, "title2");
+        persistDeptEntity(em, 3L, 1L, "title3");
 
         service = new DirectoryJDBCService(getDataSource());
     }
@@ -61,7 +49,7 @@ public class DirectoryJDBCServiceTest
     @After
     public void tearDown() throws Exception
     {
-        entityManager.close();
+        em.close();
         service = null;
     }
 
@@ -69,7 +57,7 @@ public class DirectoryJDBCServiceTest
     public void getDirectoryXML() throws Exception
     {
         String result = service.getDirectoryXML(null);
-        Assert.assertEquals(ExpectedData.directory, result);
+        Assert.assertEquals(TestExpectedData.directory, result);
     }
 }
 

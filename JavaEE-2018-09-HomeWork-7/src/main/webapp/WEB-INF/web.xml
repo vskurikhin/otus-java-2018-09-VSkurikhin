@@ -17,34 +17,39 @@
 
     <context-param>
     <param-name>RBCNewsServiceFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/RBCNews.json</param-value>-->
         <param-value>file:////tmp/RBCNews.json</param-value>
     </context-param>
 
     <context-param>
     <param-name>CBRForexServiceFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/CBRForex.xml</param-value>-->
         <param-value>file:////tmp/CBRForex.xml</param-value>
     </context-param>
 
     <context-param>
-        <param-name>JsonDataFileLocation</param-name>
-        <!--<param-value>file:///C:/temp/employee.json</param-value>-->
-        <param-value>file:////tmp/employee.json</param-value>
+        <param-name>DeptEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/DeptEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>UserEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/UserEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>EmpEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/EmpEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>UsersgroupEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/UsersgroupEntities.xml</param-value>
     </context-param>
 
     <welcome-file-list>
         <welcome-file>redirect.jsp</welcome-file>
     </welcome-file-list>
-
-    <!--<servlet>-->
-        <!--<servlet-name>InitialServlet</servlet-name>-->
-        <!--<servlet-class>ru.otus.web.InitialServlet</servlet-class>-->
-        <!--<load-on-startup>1</load-on-startup>-->
-    <!--</servlet>-->
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>InitialServlet</servlet-name>-->
-        <!--<url-pattern>/init</url-pattern>-->
-    <!--</servlet-mapping>-->
-
 
     <servlet>
         <servlet-name>LoginService</servlet-name>

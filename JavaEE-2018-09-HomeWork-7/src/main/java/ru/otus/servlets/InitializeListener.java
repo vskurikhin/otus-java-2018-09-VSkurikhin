@@ -36,7 +36,7 @@ public class InitializeListener implements ServletContextListener
     public void contextInitialized(ServletContextEvent sce)
     {
         System.out.println("On start web app ...");
-        DbService dbService = new DbJPAService(emf.createEntityManager());
+        DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
         NewsService newsService = new RBCNewsService();
         ForexService forexService = new ForexCBRService();
         DirectoryService directoryService = new DirectoryJDBCService(dataSource);

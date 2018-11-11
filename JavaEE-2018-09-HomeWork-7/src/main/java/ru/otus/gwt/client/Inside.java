@@ -74,14 +74,15 @@ public class Inside extends Welcome
         gwtCssDataGridResources.dataGrid().ensureInjected();
     }
 
-    private <T> AsyncCallback<T> getEmptyAsyncCallback(String message, Class<T> c) {
+    private <T> AsyncCallback<T> getEmptyAsyncCallback(String message, Class<T> c)
+    {
         return new AsyncCallback<T>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert(message);
             }
             @Override
-            public void onSuccess(T result) { /* None TODO */ }
+            public void onSuccess(T result) { refresh(); }
         };
     }
 
@@ -96,6 +97,13 @@ public class Inside extends Welcome
             Window.alert(e.toString());
             table.setWidth(759 + "px");
         }
+    }
+
+    private void delete(int index, Emp emp, String value)
+    {
+        service.deleteEmp(
+                emp.getId(), getEmptyAsyncCallback(" Error delete id: " + emp.getId(), Void.class)
+        );
     }
 
     private void drawTable(List<Emp> result)
@@ -168,6 +176,7 @@ public class Inside extends Welcome
                 return "x";
             }
         };
+        deleteBtn.setFieldUpdater(this::delete);
         deleteBtn.setCellStyleNames("text-align-right padding-right-1px");
 
         table.addColumn(idColumn, "Id");

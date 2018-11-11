@@ -4,10 +4,7 @@ package ru.otus.utils;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
@@ -39,6 +36,30 @@ public class IO
         return new String(encoded, encoding);
     }
 
+    public static String readInputStream(InputStream is, String encoding) throws IOException
+    {
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        try  {
+            br = new BufferedReader(new InputStreamReader(is, encoding));
+
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line).append(System.lineSeparator());
+                line = br.readLine();
+            }
+
+            return sb.toString();
+        } catch (IOException e) {
+            throw e;
+        }
+        finally {
+            if (br != null) br.close();
+            br = null;
+        }
+    }
+
     public static void saveResultToTruncatedFile(String result, String path)
     throws URISyntaxException, IOException
     {
@@ -51,6 +72,11 @@ public class IO
         try (PrintWriter pw = new PrintWriter(file)) {
             pw.print(result);
         }
+    }
+
+    public static String getAbsolutePath(String relativePath)
+    {
+        return (new File(relativePath)).getAbsolutePath();
     }
 }
 

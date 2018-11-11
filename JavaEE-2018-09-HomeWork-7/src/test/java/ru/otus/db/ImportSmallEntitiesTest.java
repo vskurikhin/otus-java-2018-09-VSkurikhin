@@ -18,7 +18,7 @@ import java.net.URL;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-public class ImportEntitiesTest
+public class ImportSmallEntitiesTest
 {
     public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
     private final String filenameDeptEntities = "src/test/resources/DeptEntities.xml";
@@ -61,7 +61,7 @@ public class ImportEntitiesTest
     public void testImportDeptEntities() throws Exception
     {
         ServletContext sc = getServletContext(filenameDeptEntities);
-        ImportEntities<DeptEntitiesList> importEntities = new ImportEntities<>(sc, filenameDeptEntities);
+        ImportSmallEntities<DeptEntitiesList> importEntities = new ImportSmallEntities<>(sc, filenameDeptEntities);
         importEntities.saveEntities(entityManager);
 
         DeptEntity expected1 = new DeptEntity();

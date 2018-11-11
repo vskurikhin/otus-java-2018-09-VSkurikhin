@@ -27,15 +27,12 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="ru.otus.web.MarshalXMLServlet" level="debug">
+        <Logger name="org.hibernate.validator.util.Version" level="info">
             <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="ru.otus.servlets" level="debug">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="ru.otus.servlets"/>
-        </Logger>
-        <Logger name="org.hibernate.validator.util.Version" level="info">
-            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="ru.otus.gwt.server" level="debug">
             <AppenderRef ref="Console"/>

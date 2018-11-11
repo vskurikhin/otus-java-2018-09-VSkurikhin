@@ -14,6 +14,19 @@ public class Constants
     public static final String REQUEST_DIRECTORY = "directory";
     public static final String REQUEST_FOREX_RATES = "forex";
     public static final String REQUEST_BROWSERS_JSP = "browsers.jsp";
+
+    public static final String OPERA = "Opera";
+    public static final String FIREFOX = "Firefox";
+    public static final String CHROME = "Chrome";
+    public static final String IE = "IE";
+    public static final String SAFARI = "Safari";
+    public static final int MIN_VERSION_OPERA = 38;
+    public static final int MIN_VERSION_FIREFOX = 63;
+    public static final int MIN_VERSION_CHROME = 50;
+    public static final int MIN_VERSION_IE = 10;
+    public static final String COOKIE_NAME_BROWSER_SUPPORT_CHECK_PASSED = "BrowserSupportCheckPassed";
+    public static final String BROWSERS_VERSION_FILTER ="BrowsersVersionFilter";
+
     public static final int TIMEOUT = 1100;
 }
 
