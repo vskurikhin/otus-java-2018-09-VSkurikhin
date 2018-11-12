@@ -16,8 +16,11 @@ import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Mockito.mock;
 import static ru.otus.services.TestDbJPAUtils.*;
 import static ru.otus.services.TestExpectedData.*;
@@ -199,8 +202,35 @@ public class DbJPAPostgreSQLServiceTest
     public void deleteEmpEntityById() throws Exception
     {
         service.deleteEmpEntityById(1L);
-        EmpEntity entity = service.getEmpEntityById(1L);
+        service.getEmpEntityById(1L);
         Assert.fail();
+    }
+
+    @Test
+    public void searchEmpEntity()
+    {
+        Map<String, Object> attrs = new HashMap<>();
+        attrs.put("name", "%Фунт%");
+        List<EmpEntity> empEntities = service.searchEmpEntity(attrs);
+        Assert.assertEquals(1, empEntities.size());
+        EmpEntity entity = getTestEmpEntity1();
+        Assert.assertTrue(empEntities.contains(entity));
+        attrs.put("job", "%Зицпредседатель%");
+        empEntities = service.searchEmpEntity(attrs);
+        Assert.assertEquals(1, empEntities.size());
+        entity = getTestEmpEntity1();
+        Assert.assertTrue(empEntities.contains(entity));
+        attrs.put("city", "%Одесса%");
+        empEntities = service.searchEmpEntity(attrs);
+        Assert.assertEquals(1, empEntities.size());
+        entity = getTestEmpEntity1();
+        Assert.assertTrue(empEntities.contains(entity));
+
+        attrs.put("age", 75L);
+        empEntities = service.searchEmpEntity(attrs);
+        Assert.assertEquals(1, empEntities.size());
+        entity = getTestEmpEntity1();
+        Assert.assertTrue(empEntities.contains(entity));
     }
 }
 

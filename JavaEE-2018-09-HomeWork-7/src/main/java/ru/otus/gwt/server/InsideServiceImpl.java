@@ -12,23 +12,20 @@ import ru.otus.gwt.client.service.InsideService;
 import ru.otus.gwt.shared.Emp;
 import ru.otus.gwt.shared.Search;
 import ru.otus.services.DbService;
+import ru.otus.services.SearchCacheService;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.servlet.ServletContext;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static ru.otus.gwt.shared.Constants.CACHE_SERVICE;
 import static ru.otus.gwt.shared.Constants.DB_SERVICE;
 
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
-    public static final String PERSISTENCE_UNIT_NAME = "jpa";
-
-    // private static final EntityManaghomework5erFactory emf =
-    //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
-    @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
-    private EntityManagerFactory emf; // for Glassfish
-    private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(InsideServiceImpl.class.getName());
 
     private Emp convertEmpEntityToEmp(EmpEntity entity) {
         return new Emp(
@@ -40,12 +37,14 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     @Override
     public List<Emp> getEmpsList()
     {
+        LOGGER.info("getEmpsList.");
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
         List<EmpEntity> list = dbService.getEmpEntities();
+
         return list.stream().map(this::convertEmpEntityToEmp).collect(Collectors.toList());
     }
 
-    private EmpEntity convertTOEmpEntity(Emp emp)
+    private EmpEntity convertToEmpEntity(Emp emp)
     {
         EmpEntity entity = new EmpEntity();
 
@@ -64,7 +63,8 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     public void addNewEmp(Emp emp)
     {
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
-        dbService.saveEmpEntity(convertTOEmpEntity(emp));
+        dbService.saveEmpEntity(convertToEmpEntity(emp));
+        LOGGER.info("Added new Emp: {}", emp);
     }
 
     @Override
@@ -72,6 +72,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     {
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
         dbService.updateFirstNameInEmpEntityById(id, value);
+        LOGGER.info("Update Emp with id: {} firstName: {}.", id, value);
     }
 
     @Override
@@ -79,6 +80,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     {
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
         dbService.updateSecondNameInEmpEntityById(id, value);
+        LOGGER.info("Update Emp with id: {} secondName: {}.", id, value);
     }
 
     @Override
@@ -86,6 +88,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     {
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
         dbService.updateSecondNameInEmpEntityById(id, value);
+        LOGGER.info("Update Emp with id: {} surName: {}.", id, value);
     }
 
     @Override
@@ -97,85 +100,49 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         LOGGER.info("EmpEntity by id: {} deleted.");
     }
 
+    private List<Emp> searchEmpInDb(Search search)
+    {
+        Map<String, Object> attrs = new HashMap<>();
+
+        if (null != search.getFio())
+            attrs.put("name", "%" + search.getFio() + "%");
+
+        if (null != search.getJob())
+            attrs.put("job", "%" + search.getJob() + "%");
+
+        if (null != search.getCity())
+            attrs.put("city", "%" + search.getCity() + "%");
+
+        if (null != search.getAge()) {
+            LOGGER.info("age: {}", search.getAge());
+            LOGGER.info("parse age: {}", Long.parseLong(search.getAge()));
+            attrs.put("age", Long.parseLong(search.getAge()));
+        }
+
+        if ( ! attrs.isEmpty()) {
+            DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
+            List<EmpEntity> empEntities = dbService.searchEmpEntity(attrs);
+            return empEntities.stream().map(this::convertEmpEntityToEmp).collect(Collectors.toList());
+        }
+
+        return getEmpsList();
+    }
+
     @Override
     public List<Emp> searchEmp(Search search)
     {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        ArrayList<EmpEntity> list = null;
+        ServletContext sc = getServletContext();
+        SearchCacheService cacheService = (SearchCacheService) sc.getAttribute(CACHE_SERVICE);
 
-        try {
-            transaction.begin();
-            String sql = null;
+        List<Emp> result = cacheService.searchInCache(search);
+        if (result != null) return result;
 
-            if (search.getFio() != null) {
-                sql = "SELECT e FROM EmpEntity e WHERE (e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
-                if (search.getJob() != null) {
-                    sql += " AND e.job LIKE :job";
-                }
-                if (search.getCity() != null) {
-                    sql += " AND e.city LIKE :city";
-                }
-                if (search.getAge() != null) {
-                    sql += " AND e.age = :age";
-                }
-                Query q = em.createQuery(sql);
+        LOGGER.info("Direct request to the database with hash: {}", search.hashCode());
 
-                q.setParameter("name", "%" + search.getFio() + "%");
-                if (search.getJob() != null)
-                    q.setParameter("job", "%" + search.getJob() + "%");
-                if (search.getCity() != null)
-                    q.setParameter("city", "%" + search.getCity() + "%");
-                if (search.getAge() != null)
-                    q.setParameter("age",  Long.parseLong(search.getAge()) );
+        result = searchEmpInDb(search);
+        cacheService.putToCache(search, result);
 
-                //noinspection unchecked
-                list = new ArrayList<>(q.getResultList());
-            }
-            else if (search.getJob() != null) {
-                sql = "SELECT e FROM EmpEntity e WHERE e.job LIKE :job";
-                Query q = em.createQuery(sql);
-
-                q.setParameter("job", "%" + search.getJob() + "%");
-                if (search.getCity() != null) {
-                    sql += " AND e.city LIKE :city";
-                }
-                if (search.getAge() != null) {
-                    sql += " AND e.age = :age";
-                }
-
-                if (search.getCity() != null)
-                    q.setParameter("city", "%" + search.getCity() + "%");
-                if (search.getAge() != null)
-                    q.setParameter("age",  Long.parseLong(search.getAge()) );
-
-                //noinspection unchecked
-                list = new ArrayList<>(q.getResultList());
-            }
-            else if (search.getCity() != null) {
-                sql = "SELECT e FROM EmpEntity e WHERE e.city LIKE :city";
-                Query q = em.createQuery(sql);
-
-                q.setParameter("city", "%" + search.getCity() + "%");
-                if (search.getAge() != null) {
-                    sql += " AND e.age = :age";
-                }
-
-                if (search.getAge() != null)
-                    q.setParameter("age",  Long.parseLong(search.getAge()) );
-
-                //noinspection unchecked
-                list = new ArrayList<>(q.getResultList());
-            }
-            else {
-                list = new ArrayList<>();
-            }
-
-            transaction.commit();
-            return list.stream().map(this::convertEmpEntityToEmp).collect(Collectors.toList());
-        } finally {
-            em.close();
-        }
+        return result;
     }
 }
 
