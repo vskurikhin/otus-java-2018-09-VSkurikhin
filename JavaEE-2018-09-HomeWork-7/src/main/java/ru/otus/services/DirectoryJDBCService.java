@@ -41,10 +41,10 @@ public class DirectoryJDBCService implements DirectoryService
     throws SQLException
     {
         sb.append("<organizationUnit id='")
-                .append(resultSet.getLong("id"))
-                .append("' title='")
-                .append(resultSet.getString("title"))
-                .append("'>").append(NL);
+          .append(resultSet.getLong("id"))
+          .append("' title='")
+          .append(resultSet.getString("title"))
+          .append("'>").append(NL);
         return sb;
     }
 

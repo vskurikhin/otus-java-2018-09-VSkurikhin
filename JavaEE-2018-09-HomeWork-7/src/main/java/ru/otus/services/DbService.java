@@ -9,6 +9,7 @@ import ru.otus.models.EmpEntity;
 import javax.servlet.ServletContext;
 import java.io.Closeable;
 import java.util.List;
+import java.util.Map;
 
 public interface DbService extends Closeable
 {
@@ -32,7 +33,7 @@ public interface DbService extends Closeable
 
     void deleteEmpEntityById(long id);
 
-    List<EmpEntity> searchEmpEntityByName(String name);
+    List<EmpEntity> searchEmpEntity(Map<String, Object> attrs);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

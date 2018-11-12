@@ -8,6 +8,8 @@ public class Constants
 {
     public static final String DB_SERVICE = "DB_SERVICE";
     public static final String NEWS_SERVICE = "NEWS_SERVICE";
+    public static final String CACHE_SERVICE = "CACHE_SERVICE";
+    // public static final String SEARCH_SERVICE = "SEARCH_SERVICE";
     public static final String FOREX_SERVICE = "FOREX_SERVICE";
     public static final String DIRECTORY_SERVICE = "DIRECTORY_SERVICE";
     public static final String REQUEST_NEWS = "news";

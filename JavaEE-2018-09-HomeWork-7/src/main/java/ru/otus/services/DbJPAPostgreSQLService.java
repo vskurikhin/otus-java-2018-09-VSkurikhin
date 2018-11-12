@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class DbJPAPostgreSQLService implements DbService
@@ -24,16 +25,19 @@ public class DbJPAPostgreSQLService implements DbService
 
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
-    private static final String SELECT_EMP_ENTITY_BY_NAME = "SELECT e FROM EmpEntity e "
-            + "WHERE (e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
-    private static final String SELECT_EMP_ENTITY_BY_JOB =
-            "SELECT e FROM EmpEntity e WHERE e.job LIKE :job";
+
+    private static final String FIO_PREDICATE =
+            "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
+    private static final String JOB_PREDICATE = "e.job LIKE :job";
+    private static final String CITY_PREDICATE = "e.city LIKE :city";
+    private static final String AGE_PREDICATE = "e.age = :age";
+
     private static final String UPDATE_EMP_FIRST_NAME_BY_ID =
             "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
     private static final String UPDATE_EMP_SECOND_NAME_BY_ID =
             "UPDATE EmpEntity e SET e.secondName = :name WHERE e.id = :id";
-    private static final String UPDATE_EMP_SUR_NAME_BY_ID =
-            "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
+    private static final String UPDATE_EMP_SUR_NAME_BY_ID = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
+
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
     private static final String DELETE_EMP_REGISTRY_CASCADE = "DELETE FROM emp_registry CASCADE";
     private static final String DELETE_DEP_DIRECTORY_CASCADE = "DELETE FROM dep_directory CASCADE";
@@ -70,20 +74,20 @@ public class DbJPAPostgreSQLService implements DbService
     public void importDb(ServletContext sc) throws Exception
     {
         String deptEntitiesXMLPath = sc.getInitParameter(DEPT_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<DeptEntitiesList> importEntities1 = new ImportSmallEntities<>(sc, deptEntitiesXMLPath);
-        importEntities1.saveEntities(em);
+        ImportSmallEntities<DeptEntitiesList> import1 = new ImportSmallEntities<>(sc, deptEntitiesXMLPath);
+        import1.saveEntities(em);
 
         String userEntitiesXMLPath = sc.getInitParameter(USER_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<UserEntitiesList> importEntities2 = new ImportSmallEntities<>(sc, userEntitiesXMLPath);
-        importEntities2.saveEntities(em);
+        ImportSmallEntities<UserEntitiesList> import2 = new ImportSmallEntities<>(sc, userEntitiesXMLPath);
+        import2.saveEntities(em);
 
         String empEntitiesXMLPath = sc.getInitParameter(EMP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<EmpEntitiesList> importEntities3 = new ImportSmallEntities<>(sc, empEntitiesXMLPath);
-        importEntities3.saveEntities(em);
+        ImportSmallEntities<EmpEntitiesList> import3 = new ImportSmallEntities<>(sc, empEntitiesXMLPath);
+        import3.saveEntities(em);
 
         String groupEntitiesXMLPath = sc.getInitParameter(GROUP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<GroupEntitiesList> importEntities4 = new ImportSmallEntities<>(sc, groupEntitiesXMLPath);
-        importEntities4.saveEntities(em);
+        ImportSmallEntities<GroupEntitiesList> import4 = new ImportSmallEntities<>(sc, groupEntitiesXMLPath);
+        import4.saveEntities(em);
     }
 
     @Override
@@ -208,21 +212,39 @@ public class DbJPAPostgreSQLService implements DbService
         }
     }
 
-    @Override
-    public List<EmpEntity> searchEmpEntityByName(String name)
+    private boolean isCorrectAttr(String key, Map<String, Object> attrs)
     {
-        if (null == name) return null;
-        return getEmpEntities(SELECT_EMP_ENTITY_BY_NAME, q -> q.setParameter("name", name));
+        return attrs.containsKey(key) && attrs.get(key) != null;
     }
 
-    public List<EmpEntity> searchEmpEntityByNameAndJob(String name, String job)
+    @Override
+    public List<EmpEntity> searchEmpEntity(Map<String, Object> attrs)
     {
-        if (null == name || null == job) return null;
-        String sql = SELECT_EMP_ENTITY_BY_NAME +" AND e.job LIKE :job";
-        return getEmpEntities(sql, q -> {
-            q.setParameter("name", name);
-            q.setParameter("job", job);
-        });
+        String sql = SELECT_EMP_ENTITY;
+        String sqlTerm = " WHERE ";
+        String sqlTermAnd = " AND ";
+
+        if (isCorrectAttr("name", attrs)) {
+            sql += sqlTerm;
+            sql += FIO_PREDICATE;
+            sqlTerm = sqlTermAnd;
+        }
+        if (isCorrectAttr("job", attrs)) {
+            sql += sqlTerm;
+            sql += JOB_PREDICATE;
+            sqlTerm = sqlTermAnd;
+        }
+        if (isCorrectAttr("city", attrs)) {
+            sql += sqlTerm;
+            sql += CITY_PREDICATE;
+            sqlTerm = sqlTermAnd;
+        }
+        if (isCorrectAttr("age", attrs)) {
+            sql += sqlTerm;
+            sql += AGE_PREDICATE;
+        }
+
+        return getEmpEntities(sql, q -> attrs.forEach(q::setParameter));
     }
 
     @Override

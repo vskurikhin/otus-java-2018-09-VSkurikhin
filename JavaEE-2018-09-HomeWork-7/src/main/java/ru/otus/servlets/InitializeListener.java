@@ -5,6 +5,8 @@ package ru.otus.servlets;
  */
 
 import ru.otus.services.*;
+import ru.otus.services.SearchCacheService;
+import ru.otus.services.SearchCacheServiceImpl;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -39,12 +41,14 @@ public class InitializeListener implements ServletContextListener
         DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
         NewsService newsService = new RBCNewsService();
         ForexService forexService = new ForexCBRService();
+        SearchCacheService cacheService = new SearchCacheServiceImpl();
         DirectoryService directoryService = new DirectoryJDBCService(dataSource);
         ServletContext sc = sce.getServletContext();
 
         sc.setAttribute(DB_SERVICE, dbService);
         sc.setAttribute(NEWS_SERVICE, newsService);
         sc.setAttribute(FOREX_SERVICE, forexService);
+        sc.setAttribute(CACHE_SERVICE, cacheService);
         sc.setAttribute(DIRECTORY_SERVICE, directoryService);
         System.out.println("Ok initialized web app.");
     }
