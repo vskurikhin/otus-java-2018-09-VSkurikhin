@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Configuration status="WARN">
+<Configuration status="DEBUG">
     <Appenders>
-        <File name="org.hibernate.validator.util.Version" fileName="logs/homework5.validator.log">
+        <File name="org.hibernate.validator.util.Version" fileName="logs/hibernate.validator.log">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{HH:mm:ss.SSS} %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
         </File>
-        <File name="ru.otus.gwt.server.LoginServiceImpl" fileName="logs/homework5.ApplicationServiceImpl.log">
+        <File name="ru.otus.gwt.server" fileName="logs/ru.otus.gwt.server.log">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{HH:mm:ss.SSS} %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
         </File>
-        <File name="ru.otus.web.BrowsersVersionFilter" fileName="logs/homework5.BrowsersVersionFilter.log">
+        <File name="ru.otus.services" fileName="logs/ru.otus.services.log">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{HH:mm:ss.SSS} %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
         </File>
-        <File name="ru.otus.web.ContextListener" fileName="logs/homework5.ContextListener.log">
+        <File name="ru.otus.servlets" fileName="logs/ru.otus.servlets.log">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-        </File>
-        <File name="ru.otus.web.InitialServlet" fileName="logs/homework5.InitialServlet.log">
-            <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{HH:mm:ss.SSS} %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
@@ -32,14 +27,20 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="ru.otus.web.MarshalXMLServlet" level="debug">
-            <AppenderRef ref="Console"/>
-        </Logger>
         <Logger name="org.hibernate.validator.util.Version" level="info">
             <AppenderRef ref="Console"/>
         </Logger>
-        <Logger name="ru.otus.gwt.server.LoginServiceImpl" level="debug">
+        <Logger name="ru.otus.gwt.server" level="debug">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="ru.otus.gwt.server"/>
+        </Logger>
+        <Logger name="ru.otus.services" level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ru.otus.services"/>
+        </Logger>
+        <Logger name="ru.otus.servlets" level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ru.otus.servlets"/>
         </Logger>
         <Root level="WARN">
             <AppenderRef ref="Console"/>

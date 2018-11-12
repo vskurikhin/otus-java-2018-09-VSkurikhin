@@ -47,6 +47,12 @@ public class EmpEntitiesList implements Serializable, EntitiesList<EmpEntity>
     public void add(EmpEntity emp) {
         employees.add(emp);
     }
+
+    @Override
+    public List<EmpEntity> asList()
+    {
+        return getEmployees();
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

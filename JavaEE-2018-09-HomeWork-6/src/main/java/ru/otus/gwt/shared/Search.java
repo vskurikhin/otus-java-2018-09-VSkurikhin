@@ -5,7 +5,11 @@ package ru.otus.gwt.shared;
  */
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode
 public class Search implements IsSerializable
 {
     private String fio;
@@ -32,26 +36,6 @@ public class Search implements IsSerializable
         if (trimmed.length() > 0) {
             this.age= job;
         }
-    }
-
-    public String getFio()
-    {
-        return fio;
-    }
-
-    public String getJob()
-    {
-        return job;
-    }
-
-    public String getCity()
-    {
-        return city;
-    }
-
-    public String getAge()
-    {
-        return age;
     }
 }
 

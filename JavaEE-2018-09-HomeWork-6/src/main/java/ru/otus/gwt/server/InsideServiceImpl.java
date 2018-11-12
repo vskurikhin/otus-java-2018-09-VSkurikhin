@@ -11,11 +11,17 @@ import ru.otus.dataset.EmpEntity;
 import ru.otus.gwt.client.service.InsideService;
 import ru.otus.gwt.shared.Emp;
 import ru.otus.gwt.shared.Search;
+import ru.otus.services.DbService;
+import ru.otus.services.SearchCacheService;
 
 import javax.persistence.*;
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.otus.gwt.shared.Constants.CACHE_SERVICE;
+import static ru.otus.gwt.shared.Constants.DB_SERVICE;
 
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
@@ -29,7 +35,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     private static final String UPDATE_EMP_FIRST_NAME = "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
     private static final String UPDATE_EMP_SECOND_NAME = "UPDATE EmpEntity e SET e.secondName = :name WHERE e.id = :id";
     private static final String UPDATE_EMP_SUR_NAME = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
-    private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(InsideServiceImpl.class.getName());
 
     private Emp convertEmpEntityToEmp(EmpEntity entity) {
         return new Emp(
@@ -151,11 +157,9 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         finally {
             em.close();
         }
-
     }
 
-    @Override
-    public List<Emp> searchEmp(Search search)
+    public List<Emp> searchEmpInDb(Search search)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -233,6 +237,23 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         } finally {
             em.close();
         }
+    }
+
+    @Override
+    public List<Emp> searchEmp(Search search)
+    {
+        ServletContext sc = getServletContext();
+        SearchCacheService cacheService = (SearchCacheService) sc.getAttribute(CACHE_SERVICE);
+
+        List<Emp> result = cacheService.searchInCache(search);
+        if (result != null) return result;
+
+        LOGGER.info("Direct request to the database with hash: {}", search.hashCode());
+
+        result = searchEmpInDb(search);
+        cacheService.putToCache(search, result);
+
+        return result;
     }
 }
 

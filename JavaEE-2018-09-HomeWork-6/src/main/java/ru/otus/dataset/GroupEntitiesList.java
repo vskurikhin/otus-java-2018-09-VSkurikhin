@@ -47,6 +47,12 @@ public class GroupEntitiesList implements Serializable, EntitiesList<GroupEntity
     public void add(GroupEntity group) {
         groups.add(group);
     }
+
+    @Override
+    public List<GroupEntity> asList()
+    {
+        return getGroups();
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
