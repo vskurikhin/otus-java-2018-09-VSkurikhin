@@ -35,15 +35,7 @@ public class CreateEmpEntity implements Function<String[], EmpEntity>
             entity.setDepartment(deptEntity);
         }
 
-        if ("NULL".equals(fields[8].toUpperCase())) {
-            entity.setUser(null);
-        }
-        else {
-            UserEntity userEntity = new UserEntity();
-            userEntity.setId(Long.parseLong(fields[8]));
-            entity.setUser(userEntity);
-        }
-
+        entity.setUser(NullString.returnUserEntity(fields[8]));
         entity.setAge(NullString.returnLong(fields[9]));
 
         return entity;

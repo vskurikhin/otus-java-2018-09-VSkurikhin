@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import javax.servlet.ServletContext;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -52,25 +53,35 @@ public class ForexCBRServiceTest
     @Test
     public void testGetCurrencyExchangeRatesXML() throws Exception
     {
-        String path = getPathDataFileLocation();
-        String result = service.getCurrencyExchangeRatesXML(ctx);
-        String expected = readFile(path, StandardCharsets.UTF_8);
+        try {
+            String path = getPathDataFileLocation();
+            String result = service.getCurrencyExchangeRatesXML(ctx);
+            String expected = readFile(path, StandardCharsets.UTF_8);
 
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.length() > 0);
-        Assert.assertEquals(expected, result);
+            Assert.assertNotNull(result);
+            Assert.assertTrue(result.length() > 0);
+            Assert.assertEquals(expected, result);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testGetCurrencyExchangeRatesJSON() throws Exception
     {
-        String path = getPathDataFileLocation();
-        String result = service.getCurrencyExchangeRatesJSON(ctx);
-        String expected = XML.toJSONObject(readFile(path, StandardCharsets.UTF_8)).toString();
+        try {
+            String path = getPathDataFileLocation();
+            String result = service.getCurrencyExchangeRatesJSON(ctx);
+            String expected = XML.toJSONObject(readFile(path, StandardCharsets.UTF_8)).toString();
 
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.length() > 0);
-        Assert.assertEquals(expected, result);
+            Assert.assertNotNull(result);
+            Assert.assertTrue(result.length() > 0);
+            Assert.assertEquals(expected, result);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
 

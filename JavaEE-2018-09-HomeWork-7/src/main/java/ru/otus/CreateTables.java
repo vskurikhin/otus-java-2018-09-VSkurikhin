@@ -17,10 +17,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 
-import ru.otus.models.DeptEntity;
-import ru.otus.models.EmpEntity;
-import ru.otus.models.GroupEntity;
-import ru.otus.models.UserEntity;
+import ru.otus.models.*;
 
 import java.util.EnumSet;
 
@@ -37,6 +34,7 @@ public class CreateTables
         sources.addAnnotatedClass(EmpEntity.class);
         sources.addAnnotatedClass(UserEntity.class);
         sources.addAnnotatedClass(GroupEntity.class);
+        sources.addAnnotatedClass(StatisticEntity.class);
 
         return sources.buildMetadata();
     }

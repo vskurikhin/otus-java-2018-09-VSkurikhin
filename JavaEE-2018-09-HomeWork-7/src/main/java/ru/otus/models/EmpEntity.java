@@ -28,8 +28,9 @@ import ru.otus.adapters.xml.UserEntityTypeXMLAdapter;
 public class EmpEntity implements DataSet, Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @SequenceGenerator(name="emp_identifier", sequenceName="emp_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "emp_identifier")
+    @Column(name = "id", nullable = false)
     @XmlAttribute(required = true)
     @JsonbProperty
     private long id;

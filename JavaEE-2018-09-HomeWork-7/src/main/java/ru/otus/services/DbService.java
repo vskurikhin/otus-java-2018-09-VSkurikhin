@@ -4,7 +4,9 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
+import ru.otus.models.DataSet;
 import ru.otus.models.EmpEntity;
+import ru.otus.models.UserEntity;
 
 import javax.servlet.ServletContext;
 import java.io.Closeable;
@@ -21,9 +23,15 @@ public interface DbService extends Closeable
 
     List<EmpEntity> getEmpEntities();
 
+    <T extends DataSet> List<T> getEntities(Class<T> c);
+
     EmpEntity getEmpEntityById(long id);
 
-    void saveEmpEntity(EmpEntity entity);
+    UserEntity getUserEntityByName(String name);
+
+    <T extends DataSet> T getEntityById(long id, Class<T> c);
+
+    <T extends DataSet> void saveEntity(T entity);
 
     void updateFirstNameInEmpEntityById(long id, String firstName);
 
@@ -32,6 +40,8 @@ public interface DbService extends Closeable
     void updateSurNameInEmpEntityById(long id, String surName);
 
     void deleteEmpEntityById(long id);
+
+    <T extends DataSet> void deleteEntityById(long id, Class<T> c);
 
     List<EmpEntity> searchEmpEntity(Map<String, Object> attrs);
 }

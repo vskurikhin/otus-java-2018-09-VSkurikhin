@@ -8,10 +8,7 @@ package ru.otus;
  * generateXML.sh or generateXML.bat
  */
 
-import ru.otus.adapters.function.CreateDeptEntity;
-import ru.otus.adapters.function.CreateEmpEntity;
-import ru.otus.adapters.function.CreateGroupEntity;
-import ru.otus.adapters.function.CreateUserEntity;
+import ru.otus.adapters.function.*;
 import ru.otus.models.*;
 
 import javax.xml.bind.JAXBContext;
@@ -46,6 +43,7 @@ public class GenerateXML
                 System.err.println("Invalid record: " + line);
             }
         }
+
         return list;
     }
 
@@ -60,6 +58,7 @@ public class GenerateXML
                 }
             }
         }
+
         return array;
     }
 
@@ -82,6 +81,10 @@ public class GenerateXML
         this.inputStream = new Scanner(System.in);
         this.filename = filename;
         switch (entityType.toLowerCase()) {
+            case "statisticentity" :
+                this.function = new CreateStatisticEntity();
+                marshalEntitiesList(readInputStream(new StatisticEntitiesList()));
+                break;
             case "deptentity" :
                 this.function = new CreateDeptEntity();
                 marshalEntitiesList(readInputStream(new DeptEntitiesList()));

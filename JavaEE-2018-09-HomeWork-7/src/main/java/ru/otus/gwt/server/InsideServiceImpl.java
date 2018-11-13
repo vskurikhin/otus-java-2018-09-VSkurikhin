@@ -63,7 +63,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     public void addNewEmp(Emp emp)
     {
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
-        dbService.saveEmpEntity(convertToEmpEntity(emp));
+        dbService.saveEntity(convertToEmpEntity(emp));
         LOGGER.info("Added new Emp: {}", emp);
     }
 

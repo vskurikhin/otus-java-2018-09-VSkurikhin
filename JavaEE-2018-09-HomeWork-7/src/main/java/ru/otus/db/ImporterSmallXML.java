@@ -16,16 +16,18 @@ import java.io.*;
 
 import static ru.otus.utils.IO.readInputStream;
 
-public class ImportSmallEntities<T extends EntitiesList>
+public class ImporterSmallXML<T extends EntitiesList>
 {
     private String xmlObjects;
     private JAXBContext jc;
 
-    public ImportSmallEntities(ServletContext sc, String filename) throws IOException, JAXBException
+    public ImporterSmallXML(ServletContext sc, String filename) throws IOException, JAXBException
     {
         jc = JAXBContext.newInstance(
-                EmpEntitiesList.class, UserEntitiesList.class, DeptEntitiesList.class, GroupEntitiesList.class,
-                DeptEntity.class, EmpEntity.class, UserEntity.class, GroupEntity.class
+                StatisticEntitiesList.class, EmpEntitiesList.class, UserEntitiesList.class,
+                DeptEntitiesList.class, GroupEntitiesList.class,
+                StatisticEntity.class, DeptEntity.class, EmpEntity.class, UserEntity.class,
+                GroupEntity.class
         );
 
         try(InputStream is = sc.getResourceAsStream(filename)) {

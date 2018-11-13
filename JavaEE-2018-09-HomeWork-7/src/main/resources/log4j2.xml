@@ -4,23 +4,23 @@
     <Appenders>
         <!-- File Appenders -->
         <File name="File_org.hibernate.validator.util.Version"
-              fileName="logs/$${env:MYPROJ:-homework}.hibernate.validator.log">
+              fileName="logs/${env:MYPROJ:-homework}.hibernate.validator.log">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 
-        <File name="File_org.hibernate" fileName="logs/$${env:MYPROJ:-homework}.hibernate.log">
+        <File name="File_org.hibernate" fileName="logs/${env:MYPROJ:-homework}.hibernate.log">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 
-        <File name="File_ru.otus.gwt.server" fileName="logs/$${env:MYPROJ:-homework}.ru.otus.gwt.server.log">
+        <File name="File_ru.otus.gwt.server" fileName="logs/${env:MYPROJ:-homework}.ru.otus.gwt.server.log">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 
-        <File name="File_ru.otus.services" fileName="logs/$${env:MYPROJ:-homework}.ru.otus.services.log">
+        <File name="File_ru.otus.services" fileName="logs/${env:MYPROJ:-homework}.ru.otus.services.log">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 
-        <File name="File_ru.otus.servlets" fileName="logs/$${env:MYPROJ:-homework}.ru.otus.servlets.log">
+        <File name="File_ru.otus.servlets" fileName="logs/${env:MYPROJ:-homework}.ru.otus.servlets.log">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 

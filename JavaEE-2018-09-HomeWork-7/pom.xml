@@ -9,7 +9,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework7</artifactId>
-    <version>7.2-1</version>
+    <version>7.3-1</version>
     <packaging>war</packaging>
 
     <name>JavaEE-09-2018 HomeWork-6 Maven Webapp</name>
@@ -47,6 +47,8 @@
         <org.mockito.version>2.21.0</org.mockito.version>
         <servlet.version>4.0.0</servlet.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <jstl.version>1.2.1</jstl.version>
+        <freemarker.version>2.3.28</freemarker.version>
 
         <cargo.version>1.6.10</cargo.version>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -280,6 +282,31 @@
             <version>1.21</version>
         </dependency>
 
+    <!-- JSTL -->
+    <dependency>
+      <groupId>javax.servlet.jsp.jstl</groupId>
+      <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+      <version>${jstl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>javax.servlet.jsp.jstl</artifactId>
+      <version>${jstl.version}</version>
+      <exclusions>
+        <!-- jstl-api was adding selvlet-api 2.5 and jsp-api-->
+        <exclusion>
+          <artifactId>jstl-api</artifactId>
+          <groupId>javax.servlet.jsp.jstl</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>${freemarker.version}</version>
+    </dependency>
+
         <!-- ========================================================================= -->
         <!-- for tests -->
         <dependency>
@@ -296,7 +323,6 @@
             <version>${org.mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -422,6 +448,7 @@
                         <jsSourceFile>cbr.js</jsSourceFile>
                         <jsSourceFile>login.js</jsSourceFile>
                         <jsSourceFile>search.js</jsSourceFile>
+                        <jsSourceFile>stats.js</jsSourceFile>
                         <jsSourceFile>xhr.js</jsSourceFile>
                     </jsSourceFiles>
                     <jsFinalFile>script-all.js</jsFinalFile>

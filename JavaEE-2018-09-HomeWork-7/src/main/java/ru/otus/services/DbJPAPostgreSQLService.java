@@ -4,12 +4,17 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import ru.otus.db.ImportSmallEntities;
+import ru.otus.db.ImporterSmallXML;
 import ru.otus.models.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +23,7 @@ import java.util.function.Consumer;
 
 public class DbJPAPostgreSQLService implements DbService
 {
+    public static final String STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION = "StatisticEntitiesXMLDataFileLocation";
     public static final String DEPT_ENTITIES_XML_DATA_FILE_LOCATION = "DeptEntitiesXMLDataFileLocation";
     public static final String USER_ENTITIES_XML_DATA_FILE_LOCATION = "UserEntitiesXMLDataFileLocation";
     public static final String EMP_ENTITIES_XML_DATA_FILE_LOCATION = "EmpEntitiesXMLDataFileLocation";
@@ -25,6 +31,7 @@ public class DbJPAPostgreSQLService implements DbService
 
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
+    private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";;
 
     private static final String FIO_PREDICATE =
             "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
@@ -40,6 +47,7 @@ public class DbJPAPostgreSQLService implements DbService
 
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
     private static final String DELETE_EMP_REGISTRY_CASCADE = "DELETE FROM emp_registry CASCADE";
+    private static final String DELETE_STATISTIC_REGISTRY_CASCADE = "DELETE FROM statistic CASCADE";
     private static final String DELETE_DEP_DIRECTORY_CASCADE = "DELETE FROM dep_directory CASCADE";
     private static final String DELETE_USERS_CASCADE = "DELETE FROM users CASCADE";
     private static final String DELETE_USER_GROUPS_CASCADE = "DELETE FROM user_groups CASCADE";
@@ -59,6 +67,7 @@ public class DbJPAPostgreSQLService implements DbService
 
         try {
             transaction.begin();
+            em.createNativeQuery(DELETE_STATISTIC_REGISTRY_CASCADE).executeUpdate();
             em.createNativeQuery(DELETE_EMP_REGISTRY_CASCADE).executeUpdate();
             em.createNativeQuery(DELETE_DEP_DIRECTORY_CASCADE).executeUpdate();
             em.createNativeQuery(DELETE_USERS_CASCADE).executeUpdate();
@@ -73,20 +82,24 @@ public class DbJPAPostgreSQLService implements DbService
     @Override
     public void importDb(ServletContext sc) throws Exception
     {
+        String statisticEntitiesXMLPath = sc.getInitParameter(STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION);
+        ImporterSmallXML<StatisticEntitiesList> import0 = new ImporterSmallXML<>(sc, statisticEntitiesXMLPath);
+        import0.saveEntities(em);
+
         String deptEntitiesXMLPath = sc.getInitParameter(DEPT_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<DeptEntitiesList> import1 = new ImportSmallEntities<>(sc, deptEntitiesXMLPath);
+        ImporterSmallXML<DeptEntitiesList> import1 = new ImporterSmallXML<>(sc, deptEntitiesXMLPath);
         import1.saveEntities(em);
 
         String userEntitiesXMLPath = sc.getInitParameter(USER_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<UserEntitiesList> import2 = new ImportSmallEntities<>(sc, userEntitiesXMLPath);
+        ImporterSmallXML<UserEntitiesList> import2 = new ImporterSmallXML<>(sc, userEntitiesXMLPath);
         import2.saveEntities(em);
 
         String empEntitiesXMLPath = sc.getInitParameter(EMP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<EmpEntitiesList> import3 = new ImportSmallEntities<>(sc, empEntitiesXMLPath);
+        ImporterSmallXML<EmpEntitiesList> import3 = new ImporterSmallXML<>(sc, empEntitiesXMLPath);
         import3.saveEntities(em);
 
         String groupEntitiesXMLPath = sc.getInitParameter(GROUP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImportSmallEntities<GroupEntitiesList> import4 = new ImportSmallEntities<>(sc, groupEntitiesXMLPath);
+        ImporterSmallXML<GroupEntitiesList> import4 = new ImporterSmallXML<>(sc, groupEntitiesXMLPath);
         import4.saveEntities(em);
     }
 
@@ -96,7 +109,7 @@ public class DbJPAPostgreSQLService implements DbService
         // TODO
     }
 
-    private List<EmpEntity> getEmpEntities(String sql, Consumer<Query> c)
+    private <T extends DataSet> List<T> getEntities(String sql, Consumer<Query> c)
     {
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -104,7 +117,7 @@ public class DbJPAPostgreSQLService implements DbService
             Query q = em.createQuery(sql);
             if (null != c) c.accept(q);
             //noinspection unchecked
-            List<EmpEntity> result = new ArrayList<>(q.getResultList());
+            List<T> result = new ArrayList<>(q.getResultList());
             transaction.commit();
             return result;
         } catch (Exception e) {
@@ -113,20 +126,34 @@ public class DbJPAPostgreSQLService implements DbService
         }
     }
 
-    @Override
-    public List<EmpEntity> getEmpEntities()
+    private <T extends DataSet> List<T> getEntitiesViaClass(Class<T> c)
     {
-        return getEmpEntities(SELECT_EMP_ENTITY, null);
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(c);
+            Root<T> criteria = criteriaQuery.from(c);
+            criteriaQuery.select(criteria);
+            List<T> result = em.createQuery(criteriaQuery).getResultList();
+            transaction.commit();
+
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
-    public <T extends DataSet> T getSingleResultById(String query, long id)
+    private  <T extends DataSet> T getEntity(String query, Consumer<Query> c)
     {
         EntityTransaction transaction = em.getTransaction();
 
         try {
             transaction.begin();
             Query q = em.createQuery(query);
-            q.setParameter("id", id);
+            if (null != c) c.accept(q);
             //noinspection unchecked
             T result = (T) q.getSingleResult();
             transaction.commit();
@@ -137,14 +164,38 @@ public class DbJPAPostgreSQLService implements DbService
         }
     }
 
-    @Override
-    public EmpEntity getEmpEntityById(long id)
+    private  <T extends DataSet> T getEntityById(String sql, long id)
     {
-        return getSingleResultById(SELECT_EMP_ENTITY_BY_ID, id);
+        return getEntity(sql, query -> query.setParameter("id", id));
     }
 
-    @Override
-    public void saveEmpEntity(EmpEntity entity)
+    private  <T extends DataSet> T getEntityByName(String sql, String name)
+    {
+        return getEntity(sql, query -> query.setParameter("name", name));
+    }
+
+    private <T extends DataSet> T getEntityViaClassById(long id, Class<T> c)
+    {
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<T> query = criteriaBuilder.createQuery(c);
+            Root<T> criteria = query.from(c);
+            query = query.select(criteria)
+                    .where(criteriaBuilder.equal(criteria.get("id"), id));
+            T result = em.createQuery(query).getSingleResult();
+            transaction.commit();
+
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
+    }
+
+    private  <T extends DataSet> void mergeEntity(T entity)
     {
         EntityTransaction transaction = em.getTransaction();
 
@@ -159,62 +210,138 @@ public class DbJPAPostgreSQLService implements DbService
         }
     }
 
-    private void queryUpdate(String query, long id, String value)
+    private void queryUpdate(String query, Consumer<Query> c)
     {
         EntityTransaction transaction = em.getTransaction();
 
         try {
             transaction.begin();
             Query q = em.createQuery(query);
+            if (null != c) c.accept(q);
+            q.executeUpdate();
+            transaction.commit();
+        }
+        catch (Exception e) {
+            transaction.rollback();
+            throw new RuntimeException(e); // TODO
+        }
+    }
+
+    private void queryUpdateById(String query, long id)
+    {
+        queryUpdate(query, q -> q.setParameter("id", id));
+    }
+
+    private void queryUpdateVariableNameById(String query, long id, String value)
+    {
+        queryUpdate(query, q -> {
             q.setParameter("id", id);
             q.setParameter("name", value);
-            q.executeUpdate();
-            transaction.commit();
-        }
-        catch (Exception e) {
-            transaction.rollback();
-            throw new RuntimeException(e); // TODO
-        }
+        });
     }
 
-    @Override
-    public void updateFirstNameInEmpEntityById(long id, String firstName)
-    {
-        queryUpdate(UPDATE_EMP_FIRST_NAME_BY_ID, id, firstName);
-    }
-
-    @Override
-    public void updateSecondNameInEmpEntityById(long id, String secondName)
-    {
-        queryUpdate(UPDATE_EMP_SECOND_NAME_BY_ID, id, secondName);
-    }
-
-    @Override
-    public void updateSurNameInEmpEntityById(long id, String surName)
-    {
-        queryUpdate(UPDATE_EMP_SUR_NAME_BY_ID, id, surName);
-    }
-
-    @Override
-    public void deleteEmpEntityById(long id)
+    private <T extends DataSet> void deleteEntityViaClassById(long id, Class<T> c)
     {
         EntityTransaction transaction = em.getTransaction();
+
         try {
             transaction.begin();
-            Query q = em.createQuery(DELETE_EMP_ENTITY_BY_ID);
-            q.setParameter("id", id);
-            q.executeUpdate();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaDelete<T> delete = criteriaBuilder.createCriteriaDelete(c);
+            Root<T> criteria = delete.from(c);
+            delete.where(criteriaBuilder.equal(criteria.get("id"), id));
+            em.createQuery(delete).executeUpdate();
             transaction.commit();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             transaction.rollback();
-            throw new RuntimeException(e); // TODO
+            throw e;
         }
     }
 
     private boolean isCorrectAttr(String key, Map<String, Object> attrs)
     {
         return attrs.containsKey(key) && attrs.get(key) != null;
+    }
+
+    @Override
+    public List<EmpEntity> getEmpEntities()
+    {
+        return getEntities(SELECT_EMP_ENTITY, null);
+    }
+
+    @Override
+    public <T extends DataSet> List<T> getEntities(Class<T> c)
+    {
+        return getEntitiesViaClass(c);
+    }
+
+    @Override
+    public EmpEntity getEmpEntityById(long id)
+    {
+        try {
+            return getEntityById(SELECT_EMP_ENTITY_BY_ID, id);
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public UserEntity getUserEntityByName(String name)
+    {
+        try {
+            return getEntityByName(SELECT_USER_ENTITY_BY_NAME, name);
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public <T extends DataSet> T getEntityById(long id, Class<T> c)
+    {
+        try {
+            return getEntityViaClassById(id, c);
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public <T extends DataSet> void saveEntity(T entity)
+    {
+        mergeEntity(entity);
+    }
+
+    @Override
+    public void updateFirstNameInEmpEntityById(long id, String firstName)
+    {
+        queryUpdateVariableNameById(UPDATE_EMP_FIRST_NAME_BY_ID, id, firstName);
+    }
+
+    @Override
+    public void updateSecondNameInEmpEntityById(long id, String secondName)
+    {
+        queryUpdateVariableNameById(UPDATE_EMP_SECOND_NAME_BY_ID, id, secondName);
+    }
+
+    @Override
+    public void updateSurNameInEmpEntityById(long id, String surName)
+    {
+        queryUpdateVariableNameById(UPDATE_EMP_SUR_NAME_BY_ID, id, surName);
+    }
+
+    @Override
+    public void deleteEmpEntityById(long id)
+    {
+        queryUpdateById(DELETE_EMP_ENTITY_BY_ID, id);
+    }
+
+    @Override
+    public <T extends DataSet> void deleteEntityById(long id, Class<T> c)
+    {
+        deleteEntityViaClassById(id, c);
     }
 
     @Override
@@ -244,7 +371,7 @@ public class DbJPAPostgreSQLService implements DbService
             sql += AGE_PREDICATE;
         }
 
-        return getEmpEntities(sql, q -> attrs.forEach(q::setParameter));
+        return getEntities(sql, q -> attrs.forEach(q::setParameter));
     }
 
     @Override

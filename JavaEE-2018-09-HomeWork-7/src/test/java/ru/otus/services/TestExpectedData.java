@@ -1,9 +1,6 @@
 package ru.otus.services;
 
-import ru.otus.models.DeptEntity;
-import ru.otus.models.EmpEntitiesList;
-import ru.otus.models.EmpEntity;
-import ru.otus.models.UserEntity;
+import ru.otus.models.*;
 
 public class TestExpectedData
 {
@@ -97,4 +94,52 @@ public class TestExpectedData
         return result;
     }
 
+    public static DeptEntity getTestDeptEntity1()
+    {
+        DeptEntity result = new DeptEntity();
+        result.setId(1L);
+        result.setParentId(0L);
+        result.setTitle("title1");
+
+        return result;
+    }
+
+    public static DeptEntity getTestDeptEntity2()
+    {
+        DeptEntity result = new DeptEntity();
+        result.setId(2L);
+        result.setParentId(1L);
+        result.setTitle("title2");
+
+        return result;
+    }
+
+    public static DeptEntity getTestDeptEntity3()
+    {
+        DeptEntity result = new DeptEntity();
+        result.setId(3L);
+        result.setParentId(1L);
+        result.setTitle("title3");
+
+        return result;
+    }
+
+    public static DeptEntitiesList getTestDeptEntitiesList()
+    {
+        DeptEntitiesList result = new DeptEntitiesList();
+        result.add(getTestDeptEntity1());
+        result.add(getTestDeptEntity2());
+        result.add(getTestDeptEntity3());
+        return result;
+    }
+
+    public static UserEntity getTestUserEntity1()
+    {
+        UserEntity result = new UserEntity();
+        result.setId(1L);
+        result.setName("funt");
+        result.setPassword("e1X6Nk2/9ydYmDO74y89BK0aNQmQnQjK59X46mMRV9Q=");
+
+        return result;
+    }
 }

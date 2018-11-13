@@ -15,7 +15,13 @@ public class Constants
     public static final String REQUEST_NEWS = "news";
     public static final String REQUEST_DIRECTORY = "directory";
     public static final String REQUEST_FOREX_RATES = "forex";
+    public static final String REQUEST_COLLECT_STATISTIC = "stats/insert";
     public static final String REQUEST_BROWSERS_JSP = "browsers.jsp";
+    public static final String DEFAULT_MARKER_NAME = "DEFAULT_MARKER";
+    public static final String ENVIRONMENT_MARKER_NAME = "MARKER_NAME";
+    public static final String PARAMETER_PAGE_NAME = "page_name";
+    public static final String PARAMETER_CLIENT_TIME = "client_time";
+    public static final String HEADER_USER_AGENT = "User-Agent";
 
     public static final String OPERA = "Opera";
     public static final String FIREFOX = "Firefox";

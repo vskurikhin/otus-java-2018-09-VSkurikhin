@@ -10,12 +10,6 @@
     <display-name>Archetype Created Web Application</display-name>
 
     <context-param>
-        <param-name>XMLDataFileLocation</param-name>
-        <!--<param-value>file:///C:/temp/employee.xml</param-value>-->
-        <param-value>file:////tmp/employee.xml</param-value>
-    </context-param>
-
-    <context-param>
     <param-name>RBCNewsServiceFileLocation</param-name>
         <!--<param-value>file:///C:/temp/RBCNews.json</param-value>-->
         <param-value>file:////tmp/RBCNews.json</param-value>
@@ -25,6 +19,11 @@
     <param-name>CBRForexServiceFileLocation</param-name>
         <!--<param-value>file:///C:/temp/CBRForex.xml</param-value>-->
         <param-value>file:////tmp/CBRForex.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>StatisticEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/StatisticEntities.xml</param-value>
     </context-param>
 
     <context-param>

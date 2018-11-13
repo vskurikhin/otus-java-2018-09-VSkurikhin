@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import = "java.io.*,java.util.*" %>
+<%@ taglib prefix="tags" uri="/custom_tag" %>
 
 <!DOCTYPE html>
 <html lang=ru>
@@ -8,6 +9,7 @@
     <title id="title">Home Work 7 of JavaEE 2018-09 | a work showcasing the feature of Freemarker</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
     <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
+<tags:sender_stat pageName="welcome" />
     <script type="text/javascript" language="javascript" src="welcome/welcome.nocache.js"></script>
 </head>
 
