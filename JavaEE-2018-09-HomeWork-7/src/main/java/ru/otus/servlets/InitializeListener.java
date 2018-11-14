@@ -43,12 +43,14 @@ public class InitializeListener implements ServletContextListener
         ForexService forexService = new ForexCBRService();
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         DirectoryService directoryService = new DirectoryJDBCService(dataSource);
+        StatisticService statisticService = new StatisticCustomTagService(true);
         ServletContext sc = sce.getServletContext();
 
         sc.setAttribute(DB_SERVICE, dbService);
         sc.setAttribute(NEWS_SERVICE, newsService);
         sc.setAttribute(FOREX_SERVICE, forexService);
         sc.setAttribute(CACHE_SERVICE, cacheService);
+        sc.setAttribute(STAT_SERVICE, statisticService);
         sc.setAttribute(DIRECTORY_SERVICE, directoryService);
         System.out.println("Ok initialized web app.");
     }

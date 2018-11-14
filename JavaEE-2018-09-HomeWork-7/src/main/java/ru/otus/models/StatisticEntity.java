@@ -14,17 +14,34 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode
 @Entity
 @Table(name = "statistic")
+@NamedStoredProcedureQuery(
+    name = "insert_statistic",
+    procedureName = "insert_db_statistic",
+    parameters = {
+        @StoredProcedureParameter(name = "name_marker",   mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "jsp_page_name", mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "ip_address",    mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "user_agent",    mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "client_time",   mode = ParameterMode.IN, type = Date.class),
+        @StoredProcedureParameter(name = "server_time",   mode = ParameterMode.IN, type = Date.class),
+        @StoredProcedureParameter(name = "session_id",    mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "user_id",       mode = ParameterMode.IN, type = Long.class),
+        @StoredProcedureParameter(name = "prev_id",       mode = ParameterMode.IN, type = Long.class),
+    }
+)
 @XmlRootElement(name = "statistic")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StatisticEntity implements DataSet, Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name="stat_identifier", sequenceName="statistic_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "stat_identifier")
     @Column(name = "id")
     @XmlAttribute(required = true)
     private long id;
