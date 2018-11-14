@@ -16,6 +16,7 @@ import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,26 +29,29 @@ import static ru.otus.utils.IO.getAbsolutePath;
 public class DbJPAPostgreSQLServiceTest
 {
     public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
-    private static final String TEST_RESOURCES = "src" + File.separator + "test" + File.separator + "resources"
-                                               + File.separator;
-    private static final String STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION = TEST_RESOURCES + "StatisticEntities.xml";
-    private static final String DEPT_ENTITIES_XML_DATA_FILE_LOCATION = TEST_RESOURCES + "DeptEntities.xml";
-    private static final String USER_ENTITIES_XML_DATA_FILE_LOCATION = TEST_RESOURCES + "UserEntities.xml";
-    private static final String EMP_ENTITIES_XML_DATA_FILE_LOCATION = TEST_RESOURCES + "EmpEntities.xml";
-    private static final String GROUP_ENTITIES_XML_DATA_FILE_LOCATION = TEST_RESOURCES + "UsersgroupEntities.xml";
+
+    private static final String TEST_RESOURCES = "src" + File.separator
+                                               + "test" + File.separator
+                                               + "resources" + File.separator;
+
+    private static final Map<String, String> FILE_LOCATIONS = new HashMap<String , String>() {{
+        put(DbJPAPostgreSQLService.TABLE_DEP_DIRECTORY, TEST_RESOURCES + "DeptEntities.xml");
+        put(DbJPAPostgreSQLService.TABLE_EMP_REGISTRY,  TEST_RESOURCES + "EmpEntities.xml");
+        put(DbJPAPostgreSQLService.TABLE_STATISTIC,     TEST_RESOURCES + "StatisticEntities.xml");
+        put(DbJPAPostgreSQLService.TABLE_USER_GROUPS,   TEST_RESOURCES + "UsersgroupEntities.xml");
+        put(DbJPAPostgreSQLService.TABLE_USERS,         TEST_RESOURCES + "UserEntities.xml");
+    }};
+
     private static final String FIRST_NAME = "FirstName";
     private static final String SECOND_NAME = "SecondName";
     private static final String SUR_NAME = "SurName";
-    private static ImporterSmallXML<StatisticEntitiesList> importStatisticEntities;
-    private static ImporterSmallXML<DeptEntitiesList> importDeptEntities;
-    private static ImporterSmallXML<UserEntitiesList> importUserEntities;
-    private static ImporterSmallXML<EmpEntitiesList> importEmpEntities;
-    private static ImporterSmallXML<GroupEntitiesList> importGroupEntities;
+
+    private static List<ImporterSmallXML<?>> importeres = new ArrayList<>();
     private static ServletContext ctx;
+
     private EntityManagerFactory emf;
     private EntityManager em;
     private DbService service;
-
 
     private static InputStream getInputStream(String relativePath) throws IOException
     {
@@ -66,32 +70,29 @@ public class DbJPAPostgreSQLServiceTest
                .getResourceAsStream(fileLocationTest);
     }
 
-
     private static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(String s)
     throws IOException, JAXBException
     {
         String entitiesXMLPath = ctx.getInitParameter(s);
-        return new ImporterSmallXML<>(ctx, entitiesXMLPath);
+        return new ImporterSmallXML<>(ctx, entitiesXMLPath, DbJPAPostgreSQLService.CLASSES);
     }
 
     private static void createImportersXMLData() throws IOException, JAXBException
     {
-        importStatisticEntities = createImporterXML(DbJPAPostgreSQLService.STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION);
-        importGroupEntities = createImporterXML(DbJPAPostgreSQLService.GROUP_ENTITIES_XML_DATA_FILE_LOCATION);
-        importDeptEntities = createImporterXML(DbJPAPostgreSQLService.DEPT_ENTITIES_XML_DATA_FILE_LOCATION);
-        importUserEntities = createImporterXML(DbJPAPostgreSQLService.USER_ENTITIES_XML_DATA_FILE_LOCATION);
-        importEmpEntities = createImporterXML(DbJPAPostgreSQLService.EMP_ENTITIES_XML_DATA_FILE_LOCATION);
+        for (String table : DbJPAPostgreSQLService.TABLES) {
+            if (FILE_LOCATIONS.get(table) != null)
+                importeres.add(createImporterXML(DbJPAPostgreSQLService.FILE_LOCATIONS.get(table)));
+        }
     }
 
     @BeforeClass
     public static void setupServletContext() throws IOException, JAXBException
     {
         ctx = mock(ServletContext.class);
-        mockResourceAsStream(STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION, DbJPAPostgreSQLService.STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION);
-        mockResourceAsStream(DEPT_ENTITIES_XML_DATA_FILE_LOCATION,     DbJPAPostgreSQLService.DEPT_ENTITIES_XML_DATA_FILE_LOCATION);
-        mockResourceAsStream(USER_ENTITIES_XML_DATA_FILE_LOCATION,     DbJPAPostgreSQLService.USER_ENTITIES_XML_DATA_FILE_LOCATION);
-        mockResourceAsStream(EMP_ENTITIES_XML_DATA_FILE_LOCATION,      DbJPAPostgreSQLService.EMP_ENTITIES_XML_DATA_FILE_LOCATION);
-        mockResourceAsStream(GROUP_ENTITIES_XML_DATA_FILE_LOCATION,    DbJPAPostgreSQLService.GROUP_ENTITIES_XML_DATA_FILE_LOCATION);
+        for (String table : DbJPAPostgreSQLService.TABLES) {
+            String mock = DbJPAPostgreSQLService.FILE_LOCATIONS.get(table);
+            mockResourceAsStream(FILE_LOCATIONS.get(table), mock);
+        }
         createImportersXMLData();
     }
 
@@ -102,11 +103,9 @@ public class DbJPAPostgreSQLServiceTest
         em = emf.createEntityManager();
         service = new DbJPAPostgreSQLService(em);
 
-        importGroupEntities.saveEntities(em);
-        importUserEntities.saveEntities(em);
-        importDeptEntities.saveEntities(em);
-        importEmpEntities.saveEntities(em);
-        importStatisticEntities.saveEntities(em);
+        for (ImporterSmallXML<?> importer : importeres) {
+            importer.saveEntities(em);
+        }
     }
 
     @After

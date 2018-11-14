@@ -6,8 +6,8 @@ package ru.otus.servlets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.models.StatisticEntity;
 import ru.otus.services.DbService;
+import ru.otus.services.StatisticService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static ru.otus.gwt.shared.Constants.*;
 
@@ -25,38 +23,22 @@ public class CollectStatisticServlet extends HttpServlet
 {
     private static final Logger LOGGER = LogManager.getLogger(CollectStatisticServlet.class.getName());
 
-    private String getNameMarker()
-    {
-        return Optional.ofNullable(System.getenv(ENVIRONMENT_MARKER_NAME)).orElse(DEFAULT_MARKER_NAME);
-    }
-
-    void statFromRequestParams(HttpServletRequest request)
-    {
-        DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
-
-        StatisticEntity result = new StatisticEntity();
-        result.setId(-1L);
-        result.setNameMarker(getNameMarker());
-        result.setJspPageName(request.getParameter(PARAMETER_PAGE_NAME));
-        result.setIpAddress(request.getRemoteAddr());
-        result.setUserAgent(request.getHeader(HEADER_USER_AGENT));
-        result.setClientTime(LocalDateTime.parse(request.getParameter(PARAMETER_CLIENT_TIME)));
-        result.setServerTime(LocalDateTime.now());
-        result.setSessionId(request.getSession().getId());
-        result.setUser(dbService.getUserEntityByName(request.getRemoteUser()));
-        result.setPreviousId(null);
-
-        dbService.saveEntity(result);
-    }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
     {
         LOGGER.info("doPost");
         try (PrintWriter pw = resp.getWriter()) {
-            statFromRequestParams(req);
             resp.setHeader("Content-Type", "application/json; charset=UTF-8");
-            pw.write("{\"visits_stat_id\":\"" + 1 + "\"}");
+            StatisticService statService = (StatisticService) getServletContext().getAttribute(STAT_SERVICE);
+            if (statService.isCollectionEnabled()) {
+                DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
+                long result = statService.saveStatisticFromRequestParams(req, dbService);
+                LOGGER.info("visits_stat_id: {}", result);
+                pw.write("{\"visits_stat_id\":\"" + result + "\"}");
+            }
+            else {
+                pw.write("{\"visits_stat_id\":\"-1\"}");
+            }
         } catch (Exception e) {
             LOGGER.error(e);
         }

@@ -61,7 +61,9 @@ public class ImporterSmallXMLTest
     public void testImportDeptEntities() throws Exception
     {
         ServletContext sc = getServletContext(filenameDeptEntities);
-        ImporterSmallXML<DeptEntitiesList> importEntities = new ImporterSmallXML<>(sc, filenameDeptEntities);
+        ImporterSmallXML<DeptEntitiesList> importEntities = new ImporterSmallXML<>(
+            sc, filenameDeptEntities, DeptEntity.class, DeptEntitiesList.class
+        );
         importEntities.saveEntities(entityManager);
 
         DeptEntity expected1 = new DeptEntity();

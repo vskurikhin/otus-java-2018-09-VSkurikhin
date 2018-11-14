@@ -4,12 +4,11 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import ru.otus.models.DataSet;
-import ru.otus.models.EmpEntity;
-import ru.otus.models.UserEntity;
+import ru.otus.models.*;
 
 import javax.servlet.ServletContext;
 import java.io.Closeable;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,8 @@ public interface DbService extends Closeable
     void importDb(ServletContext sc) throws Exception;
 
     void exportDb(ServletContext sc) throws Exception;
+
+    List<StatisticEntity> getAllStatisticElements() throws SQLException;
 
     List<EmpEntity> getEmpEntities();
 
@@ -32,6 +33,8 @@ public interface DbService extends Closeable
     <T extends DataSet> T getEntityById(long id, Class<T> c);
 
     <T extends DataSet> void saveEntity(T entity);
+
+    long insertIntoStatistic(StatisticEntity entity);
 
     void updateFirstNameInEmpEntityById(long id, String firstName);
 

@@ -7,37 +7,68 @@ package ru.otus.services;
 import ru.otus.db.ImporterSmallXML;
 import ru.otus.models.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.servlet.ServletContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class DbJPAPostgreSQLService implements DbService
 {
-    public static final String STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION = "StatisticEntitiesXMLDataFileLocation";
-    public static final String DEPT_ENTITIES_XML_DATA_FILE_LOCATION = "DeptEntitiesXMLDataFileLocation";
-    public static final String USER_ENTITIES_XML_DATA_FILE_LOCATION = "UserEntitiesXMLDataFileLocation";
-    public static final String EMP_ENTITIES_XML_DATA_FILE_LOCATION = "EmpEntitiesXMLDataFileLocation";
-    public static final String GROUP_ENTITIES_XML_DATA_FILE_LOCATION = "UsersgroupEntitiesXMLDataFileLocation";
+    public static final String TABLE_USERS = "users";
+    public static final String TABLE_DEP_DIRECTORY = "dep_directory";
+    public static final String TABLE_EMP_REGISTRY = "emp_registry";
+    public static final String TABLE_USER_GROUPS = "user_groups";
+    public static final String TABLE_STATISTIC = "statistic";
+
+    public static final String[] TABLES = new String[] {
+            TABLE_USERS,
+            TABLE_DEP_DIRECTORY,
+            TABLE_EMP_REGISTRY,
+            TABLE_USER_GROUPS,
+            TABLE_STATISTIC,
+    };
+
+    public static final String[] ORDER_OF_DELETE_TABLES = new String[] {
+            TABLE_EMP_REGISTRY,
+            TABLE_DEP_DIRECTORY,
+            TABLE_STATISTIC,
+            TABLE_USER_GROUPS,
+            TABLE_USERS,
+    };
+
+    public static final Map<String , String> FILE_LOCATIONS = new HashMap<String , String>() {{
+        put(TABLE_DEP_DIRECTORY, "DeptEntitiesXMLDataFileLocation");
+        put(TABLE_EMP_REGISTRY,  "EmpEntitiesXMLDataFileLocation");
+        put(TABLE_STATISTIC,     "StatisticEntitiesXMLDataFileLocation");
+        put(TABLE_USER_GROUPS,   "UsersgroupEntitiesXMLDataFileLocation");
+        put(TABLE_USERS,         "UserEntitiesXMLDataFileLocation");
+    }};
+
+    public static final Class<?>[] CLASSES = new Class<?>[] {
+            DeptEntity.class,
+            DeptEntitiesList.class,
+            EmpEntity.class,
+            EmpEntitiesList.class,
+            GroupEntity.class,
+            GroupEntitiesList.class,
+            StatisticEntity.class,
+            StatisticEntitiesList.class,
+            UserEntity.class,
+            UserEntitiesList.class,
+    };
 
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
     private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";;
-
-    private static final String FIO_PREDICATE =
-            "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
-    private static final String JOB_PREDICATE = "e.job LIKE :job";
-    private static final String CITY_PREDICATE = "e.city LIKE :city";
-    private static final String AGE_PREDICATE = "e.age = :age";
 
     private static final String UPDATE_EMP_FIRST_NAME_BY_ID =
             "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
@@ -46,12 +77,13 @@ public class DbJPAPostgreSQLService implements DbService
     private static final String UPDATE_EMP_SUR_NAME_BY_ID = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
 
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
-    private static final String DELETE_EMP_REGISTRY_CASCADE = "DELETE FROM emp_registry CASCADE";
-    private static final String DELETE_STATISTIC_REGISTRY_CASCADE = "DELETE FROM statistic CASCADE";
-    private static final String DELETE_DEP_DIRECTORY_CASCADE = "DELETE FROM dep_directory CASCADE";
-    private static final String DELETE_USERS_CASCADE = "DELETE FROM users CASCADE";
-    private static final String DELETE_USER_GROUPS_CASCADE = "DELETE FROM user_groups CASCADE";
     private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
+
+    private static final String FIO_PREDICATE =
+            "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
+    private static final String JOB_PREDICATE = "e.job LIKE :job";
+    private static final String CITY_PREDICATE = "e.city LIKE :city";
+    private static final String AGE_PREDICATE = "e.age = :age";
 
     private EntityManager em;
 
@@ -67,11 +99,9 @@ public class DbJPAPostgreSQLService implements DbService
 
         try {
             transaction.begin();
-            em.createNativeQuery(DELETE_STATISTIC_REGISTRY_CASCADE).executeUpdate();
-            em.createNativeQuery(DELETE_EMP_REGISTRY_CASCADE).executeUpdate();
-            em.createNativeQuery(DELETE_DEP_DIRECTORY_CASCADE).executeUpdate();
-            em.createNativeQuery(DELETE_USERS_CASCADE).executeUpdate();
-            em.createNativeQuery(DELETE_USER_GROUPS_CASCADE).executeUpdate();
+            for (String table : ORDER_OF_DELETE_TABLES) {
+                em.createNativeQuery("DELETE FROM " + table + " CASCADE").executeUpdate();
+            }
             em.createNativeQuery(ALTER_SEQ_RESTART_WITH_1).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
@@ -79,28 +109,19 @@ public class DbJPAPostgreSQLService implements DbService
         }
     }
 
+    private static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(ServletContext sc, String s)
+    throws IOException, JAXBException
+    {
+        String entitiesXMLPath = sc.getInitParameter(s);
+        return new ImporterSmallXML<>(sc, entitiesXMLPath, CLASSES);
+    }
+
     @Override
     public void importDb(ServletContext sc) throws Exception
     {
-        String statisticEntitiesXMLPath = sc.getInitParameter(STATISTIC_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImporterSmallXML<StatisticEntitiesList> import0 = new ImporterSmallXML<>(sc, statisticEntitiesXMLPath);
-        import0.saveEntities(em);
-
-        String deptEntitiesXMLPath = sc.getInitParameter(DEPT_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImporterSmallXML<DeptEntitiesList> import1 = new ImporterSmallXML<>(sc, deptEntitiesXMLPath);
-        import1.saveEntities(em);
-
-        String userEntitiesXMLPath = sc.getInitParameter(USER_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImporterSmallXML<UserEntitiesList> import2 = new ImporterSmallXML<>(sc, userEntitiesXMLPath);
-        import2.saveEntities(em);
-
-        String empEntitiesXMLPath = sc.getInitParameter(EMP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImporterSmallXML<EmpEntitiesList> import3 = new ImporterSmallXML<>(sc, empEntitiesXMLPath);
-        import3.saveEntities(em);
-
-        String groupEntitiesXMLPath = sc.getInitParameter(GROUP_ENTITIES_XML_DATA_FILE_LOCATION);
-        ImporterSmallXML<GroupEntitiesList> import4 = new ImporterSmallXML<>(sc, groupEntitiesXMLPath);
-        import4.saveEntities(em);
+        for (String table : TABLES) {
+            createImporterXML(sc, FILE_LOCATIONS.get(table)).saveEntities(em);
+        }
     }
 
     @Override
@@ -194,6 +215,13 @@ public class DbJPAPostgreSQLService implements DbService
             throw e;
         }
     }
+
+    @Override
+    public List<StatisticEntity> getAllStatisticElements() throws SQLException
+    {
+        return getEntitiesViaClass(StatisticEntity.class);
+    }
+
 
     private  <T extends DataSet> void mergeEntity(T entity)
     {
@@ -312,6 +340,49 @@ public class DbJPAPostgreSQLService implements DbService
     public <T extends DataSet> void saveEntity(T entity)
     {
         mergeEntity(entity);
+    }
+
+    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(
+            localDateTime.getYear(), localDateTime.getMonthValue()-1, localDateTime.getDayOfMonth(),
+            localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()
+        );
+        return calendar.getTime();
+    }
+
+    @Override
+    public long insertIntoStatistic(StatisticEntity entity)
+    {
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            UserEntity user = entity.getUser();
+            if (null == user) {
+                user = new UserEntity();
+                user.setId(-1L);
+            }
+
+            StoredProcedureQuery proc = em.createNamedStoredProcedureQuery("insert_statistic");
+            proc.setParameter("name_marker",   entity.getNameMarker());
+            proc.setParameter("jsp_page_name", entity.getJspPageName());
+            proc.setParameter("ip_address",    entity.getIpAddress());
+            proc.setParameter("user_agent",    entity.getUserAgent());
+            proc.setParameter("client_time",   localDateTimeToDate(entity.getClientTime()), TemporalType.TIMESTAMP);
+            proc.setParameter("server_time",   localDateTimeToDate(entity.getServerTime()), TemporalType.TIMESTAMP);
+            proc.setParameter("session_id",    entity.getSessionId());
+            proc.setParameter("user_id",       user.getId());
+            proc.setParameter("prev_id",       entity.getPreviousId());
+
+            BigInteger result = (BigInteger) proc.getSingleResult();
+            transaction.commit();
+            return result.longValue();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     @Override

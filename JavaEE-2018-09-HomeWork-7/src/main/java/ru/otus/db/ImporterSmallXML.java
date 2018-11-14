@@ -5,9 +5,11 @@ package ru.otus.db;
  */
 
 import ru.otus.models.*;
+import ru.otus.services.DbJPAPostgreSQLService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TransactionRequiredException;
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,13 +23,22 @@ public class ImporterSmallXML<T extends EntitiesList>
     private String xmlObjects;
     private JAXBContext jc;
 
-    public ImporterSmallXML(ServletContext sc, String filename) throws IOException, JAXBException
+    public ImporterSmallXML(ServletContext sc, String filename, Class<?> ... classes)
+    throws IOException, JAXBException
     {
-        jc = JAXBContext.newInstance(
-                StatisticEntitiesList.class, EmpEntitiesList.class, UserEntitiesList.class,
-                DeptEntitiesList.class, GroupEntitiesList.class,
-                StatisticEntity.class, DeptEntity.class, EmpEntity.class, UserEntity.class,
-                GroupEntity.class
+        if (null == classes || classes.length < 1)
+            throw new RuntimeException("classes has'n classes");
+        jc = JAXBContext.newInstance(classes
+/*                DeptEntity.class,
+                DeptEntitiesList.class,
+                EmpEntity.class,
+                EmpEntitiesList.class,
+                GroupEntity.class,
+                GroupEntitiesList.class,
+                StatisticEntity.class,
+                StatisticEntitiesList.class,
+                UserEntity.class,
+                UserEntitiesList.class*/
         );
 
         try(InputStream is = sc.getResourceAsStream(filename)) {
@@ -37,21 +48,26 @@ public class ImporterSmallXML<T extends EntitiesList>
         }
     }
 
-    public <E extends DataSet> void saveEntities(EntityManager em)
-    throws JAXBException, IOException
+    public <E extends DataSet> void saveEntities(EntityManager em) throws JAXBException
     {
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         //noinspection unchecked
         T entities = (T) unmarshaller.unmarshal(new StringReader(xmlObjects));
 
         EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        for (Object e : entities.asList()) {
-            //noinspection unchecked
-            E entity = (E) e;
-            em.merge(entity);
+        try {
+            transaction.begin();
+            for (Object e : entities.asList()) {
+                //noinspection unchecked
+                E entity = (E) e;
+                em.merge(entity);
+            }
+            transaction.commit();
         }
-        transaction.commit();
+        catch (TransactionRequiredException e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }
 
