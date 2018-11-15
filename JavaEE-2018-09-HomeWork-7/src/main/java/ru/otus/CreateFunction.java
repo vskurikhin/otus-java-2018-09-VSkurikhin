@@ -1,3 +1,4 @@
+package ru.otus;
 
 /*
  * Created by VSkurikhin at autumn 2018.
