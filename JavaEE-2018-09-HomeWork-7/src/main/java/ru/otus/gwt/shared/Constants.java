@@ -18,7 +18,7 @@ public class Constants
     public static final String REQUEST_DIRECTORY = "directory";
     public static final String REQUEST_FOREX_RATES = "forex";
     public static final String REQUEST_NEWS = "news";
-    public static final String REQUEST_VISITS_STAT_JSP = "viewstat";
+    public static final String REQUEST_VISITS_STAT_JSP = "inside/viewstat.do";
 
     public static final String DEFAULT_MARKER_NAME = "DEFAULT_MARKER";
     public static final String ENVIRONMENT_MARKER_NAME = "MARKER_NAME";

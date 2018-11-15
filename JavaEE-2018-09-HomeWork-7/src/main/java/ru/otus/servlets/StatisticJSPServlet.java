@@ -1,7 +1,6 @@
 package ru.otus.servlets;
 
 import ru.otus.models.StatisticEntity;
-import ru.otus.models.VisitsStatElem;
 import ru.otus.services.DbService;
 import ru.otus.services.StatisticService;
 
@@ -14,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ru.otus.gwt.shared.Constants.*;
 
@@ -32,6 +29,7 @@ public class StatisticJSPServlet extends HttpServlet
             DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
             List<StatisticEntity> elems = statService.getAllVisitsStatElements(dbService);
             request.setAttribute(ATTR_STAT_ELEMEMTS, elems);
+            /*
             Map<String, Long> chartValuesMap = elems.stream().collect(
                 Collectors.groupingBy(StatisticEntity::getJspPageName, Collectors.counting())
             );
@@ -42,7 +40,7 @@ public class StatisticJSPServlet extends HttpServlet
                 e -> e.getValue().toString()).collect(Collectors.joining(", ")
             );
             request.setAttribute(ATTR_STAT_CHART_LABELS, chartLabels);
-            request.setAttribute(ATTR_STAT_CHART_VALUES, chartValues);
+            request.setAttribute(ATTR_STAT_CHART_VALUES, chartValues);*/
 
             request.getRequestDispatcher("/WEB-INF/classes/ftl/visits_stat.ftl").forward(request, response);
         } catch (SQLException e) {

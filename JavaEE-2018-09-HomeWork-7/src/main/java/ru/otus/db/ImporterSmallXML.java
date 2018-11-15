@@ -29,16 +29,6 @@ public class ImporterSmallXML<T extends EntitiesList>
         if (null == classes || classes.length < 1)
             throw new RuntimeException("classes has'n classes");
         jc = JAXBContext.newInstance(classes
-/*                DeptEntity.class,
-                DeptEntitiesList.class,
-                EmpEntity.class,
-                EmpEntitiesList.class,
-                GroupEntity.class,
-                GroupEntitiesList.class,
-                StatisticEntity.class,
-                StatisticEntitiesList.class,
-                UserEntity.class,
-                UserEntitiesList.class*/
         );
 
         try(InputStream is = sc.getResourceAsStream(filename)) {
