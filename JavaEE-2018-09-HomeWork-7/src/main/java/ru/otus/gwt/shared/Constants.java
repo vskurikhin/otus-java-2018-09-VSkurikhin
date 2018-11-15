@@ -18,7 +18,8 @@ public class Constants
     public static final String REQUEST_DIRECTORY = "directory";
     public static final String REQUEST_FOREX_RATES = "forex";
     public static final String REQUEST_NEWS = "news";
-    public static final String REQUEST_VISITS_STAT_JSP = "inside/viewstat.do";
+    public static final String REQUEST_VISITS_STAT_JSP = "inside/stat.do";
+    public static final String REQUEST_VISITS_SWITCH_COLLECTION = "inside/switch_collection_enabled";
 
     public static final String DEFAULT_MARKER_NAME = "DEFAULT_MARKER";
     public static final String ENVIRONMENT_MARKER_NAME = "MARKER_NAME";
@@ -27,10 +28,9 @@ public class Constants
     public static final String PARAMETER_PAGE_NAME = "page_name";
     public static final String PARAMETER_PREVIOS_ID = "prev_id";
 
-    public static final String ATTR_STAT_ENABLED = "stat_enabled";
+    public static final String ATTR_BASE_URL = "base_url";
     public static final String ATTR_STAT_ELEMEMTS = "stat_elememts";
-    public static final String ATTR_STAT_CHART_LABELS = "stat_chart_labels";
-    public static final String ATTR_STAT_CHART_VALUES = "stat_chart_values";
+    public static final String ATTR_STAT_ENABLED = "stat_enabled";
 
     public static final String OPERA = "Opera";
     public static final String FIREFOX = "Firefox";

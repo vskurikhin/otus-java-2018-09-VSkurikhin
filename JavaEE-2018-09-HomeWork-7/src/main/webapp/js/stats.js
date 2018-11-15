@@ -47,3 +47,24 @@ function logToStatistics(pageID) {
     requestBody += "&client_time=" + encodeURIComponent(dateTimeToStr(t));
     xhr.send(requestBody)
 }
+
+function switchCollectionEnabled(){
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'switch_collection_enabled', true);
+    xhr.onreadystatechange = function () {
+        if (this.readyState !== 4) return;
+
+        var isCollectionEnabled = document.getElementById("isCollectionEnabled");
+
+        if (this.status === 200) {
+            if (isCollectionEnabled.innerText.trim() === "да") {
+                isCollectionEnabled.innerText = "нет"
+            } else {
+                isCollectionEnabled.innerText = "да"
+            }
+        }
+    };
+    xhr.send()
+}
+

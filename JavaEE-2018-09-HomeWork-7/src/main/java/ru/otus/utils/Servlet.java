@@ -48,6 +48,13 @@ public class Servlet
     {
         TransformerFactory.newInstance().newTransformer().transform(source, resultOut);
     }
+
+    public static String getBaseURL(HttpServletRequest request)
+    {
+        String url = request.getRequestURL().toString();
+        return url.substring(0, url.length() - request.getRequestURI().length())
+                + request.getContextPath() + "/";
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

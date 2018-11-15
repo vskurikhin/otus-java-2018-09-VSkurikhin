@@ -77,7 +77,9 @@ public class DbJPAPostgreSQLService implements DbService
     private static final String UPDATE_EMP_SUR_NAME_BY_ID = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
 
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
-    private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
+    private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE emp_id_seq RESTART WITH 1";
+    private static final String ALTER_SEQ_RESTART_WITH_2 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
+    private static final String ALTER_SEQ_RESTART_WITH_3 = "ALTER SEQUENCE statistic_id_seq RESTART WITH 1";
 
     private static final String FIO_PREDICATE =
             "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
@@ -103,6 +105,8 @@ public class DbJPAPostgreSQLService implements DbService
                 em.createNativeQuery("DELETE FROM " + table + " CASCADE").executeUpdate();
             }
             em.createNativeQuery(ALTER_SEQ_RESTART_WITH_1).executeUpdate();
+            em.createNativeQuery(ALTER_SEQ_RESTART_WITH_2).executeUpdate();
+            em.createNativeQuery(ALTER_SEQ_RESTART_WITH_3).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

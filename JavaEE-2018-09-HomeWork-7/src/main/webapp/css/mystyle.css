@@ -75,6 +75,31 @@
     vertical-align: top
 }
 
+.tg1 {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+.tg1 td {
+    border: 1px solid black;
+    overflow: hidden;
+    padding: 1px;
+    word-break: normal
+}
+
+.tg1 th {
+    border: 0 solid black;
+    overflow: hidden;
+    padding: 1px;
+    word-break: normal
+}
+
+.tg1 .tg-0lax {
+    horiz-align: left;
+    text-align: left;
+    vertical-align: top
+}
+
 html {
     height: 100%
 }

@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static ru.otus.gwt.shared.Constants.*;
+import static ru.otus.utils.Servlet.getBaseURL;
 
 @WebServlet("/" + REQUEST_VISITS_STAT_JSP)
 public class StatisticJSPServlet extends HttpServlet
@@ -24,23 +25,12 @@ public class StatisticJSPServlet extends HttpServlet
     throws ServletException, IOException
     {
         StatisticService statService = (StatisticService) getServletContext().getAttribute(STAT_SERVICE);
+        request.setAttribute(ATTR_BASE_URL, getBaseURL(request));
         request.setAttribute(ATTR_STAT_ENABLED, statService.isCollectionEnabled());
         try {
             DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
             List<StatisticEntity> elems = statService.getAllVisitsStatElements(dbService);
             request.setAttribute(ATTR_STAT_ELEMEMTS, elems);
-            /*
-            Map<String, Long> chartValuesMap = elems.stream().collect(
-                Collectors.groupingBy(StatisticEntity::getJspPageName, Collectors.counting())
-            );
-            String chartLabels = chartValuesMap.entrySet().stream().map(
-                e -> "\"" + e.getKey() + "\"").collect(Collectors.joining(", ")
-            );
-            String chartValues = chartValuesMap.entrySet().stream().map(
-                e -> e.getValue().toString()).collect(Collectors.joining(", ")
-            );
-            request.setAttribute(ATTR_STAT_CHART_LABELS, chartLabels);
-            request.setAttribute(ATTR_STAT_CHART_VALUES, chartValues);*/
 
             request.getRequestDispatcher("/WEB-INF/classes/ftl/visits_stat.ftl").forward(request, response);
         } catch (SQLException e) {

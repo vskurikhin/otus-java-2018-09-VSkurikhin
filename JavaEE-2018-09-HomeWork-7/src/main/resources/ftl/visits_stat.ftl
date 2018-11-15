@@ -5,10 +5,10 @@
 <head>
     <meta charset=UTF-8>
     <title id="title">Home Work 7 of JavaEE 2018-09 | a work showcasing the feature of Freemarker</title>
-    <link rel="stylesheet" href="../css/style-all.min.css"/>
-    <script type="text/javascript" language="javascript" src="../js/script-all.min.js"></script>
+    <link rel="stylesheet" href="${base_url}css/style-all.min.css"/>
+    <script type="text/javascript" language="javascript" src="${base_url}js/script-all.min.js"></script>
 <@tags.sender_stat pageName = "visits_stat" />
-    <script type="text/javascript" language="javascript" src="../inside/inside.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="${base_url}inside/inside.nocache.js"></script>
 </head>
 
 <body class="body">
@@ -28,21 +28,30 @@
                     <br>
                     <input type="button" value="Включить/отключить сбор статистики" onclick="switchCollectionEnabled()">
 
-                    <table class="tg body">
-                        <tr class="main-header w3-center">
-                            <th class="tg-0lax">ID</th>
-                            <th class="tg-0lax">Marker</th>
-                            <th class="tg-0lax">Page</th>
-                            <th class="tg-0lax">IP</th>
-                            <th class="tg-0lax">User-agent</th>
+                    <table class="tg1 body">
+                        <tr class="tg1 main-header w3-center">
+                            <th class="tg1-0lax">ID</th>
+                            <th class="tg1-0lax">Marker</th>
+                            <th class="tg1-0lax">Page</th>
+                            <th class="tg1-0lax">IP</th>
+                            <th class="tg1-0lax">Time</th>
+                            <th class="tg1-0lax">Session-Id</th>
+                            <th class="tg1-0lax">User-Name</th>
+                            <th class="tg1-0lax">Previous-Id</th>
                         </tr>
                         <#list stat_elememts as elem>
-                        <tr>
-                            <td class="tg-0lax">${elem.id}</td>
-                            <td class="tg-0lax">${elem.nameMarker}</td>
-                            <td class="tg-0lax">${elem.jspPageName}</td>
-                            <td class="tg-0lax">${elem.ipAddress}</td>
-                            <td class="tg-0lax">${elem.userAgent}</td>
+                        <tr class="tg1">
+                            <td class="tg1-0lax" style="text-align:right!important" rowspan="2">${elem.id}&nbsp;</td>
+                            <td class="tg1-0lax">${elem.nameMarker}</td>
+                            <td class="tg1-0lax w3-center">${elem.jspPageName}</td>
+                            <td class="tg1-0lax w3-center">${elem.ipAddress}</td>
+                            <td class="tg1-0lax w3-center"><#if elem.clientTime??>${elem.clientTime}</#if></td>
+                            <td class="tg1-0lax w3-center"><#if elem.sessionId??>${elem.sessionId}</#if></td>
+                            <td class="tg1-0lax w3-center"><#if elem.user??>${elem.user.name}</#if></td>
+                            <td class="tg1-0lax w3-center"><#if elem.previousId??>${elem. previousId}</#if></td>
+                        </tr>
+                        <tr class="tg1">
+                            <td class="tg1-0lax w3-center" colspan="7"><b>User-Agent:&nbsp;|&nbsp;</b>${elem.userAgent}</td>
                         </tr>
                         </#list>
                     </table>

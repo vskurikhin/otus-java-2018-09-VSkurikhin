@@ -61,6 +61,7 @@ public class StatisticCustomTagService implements StatisticService
         return dbService.getAllStatisticElements();
     }
 
+    @Override
     public void setCollectionEnabled(boolean collectionEnabled)
     {
         this.collectionEnabled = collectionEnabled;

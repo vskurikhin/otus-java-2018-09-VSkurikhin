@@ -52,17 +52,17 @@ public class StatisticEntity implements DataSet, Serializable
     private String nameMarker;
 
     @Basic
-    @Column(name = "jsp_page_name")
+    @Column(name = "jsp_page_name", nullable = false)
     @XmlElement
     private String jspPageName;
 
     @Basic
-    @Column(name = "ip_address")
+    @Column(name = "ip_address", nullable = false)
     @XmlElement
     private String ipAddress;
 
     @Basic
-    @Column(name = "user_agent")
+    @Column(name = "user_agent", nullable = false)
     @XmlElement
     private String userAgent;
 
@@ -77,7 +77,7 @@ public class StatisticEntity implements DataSet, Serializable
     private LocalDateTime serverTime;
 
     @Basic
-    @Column(name = "session_id")
+    @Column(name = "session_id", nullable = false)
     @XmlElement
     private String sessionId;
 
