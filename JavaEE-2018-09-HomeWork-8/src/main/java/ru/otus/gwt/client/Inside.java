@@ -321,6 +321,7 @@ public class Inside extends Welcome
         super.initHeaderAndTitle();
         initMainContainer();
         new News(GWT.getHostPageBaseURL() + "/" + REQUEST_NEWS);
+        new CBRValutes(GWT.getHostPageBaseURL() + "/" + REQUEST_FOREX_RATES);
         Window.addResizeHandler(event -> doResize());
     }
 }

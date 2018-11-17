@@ -137,6 +137,7 @@ public class Welcome implements EntryPoint
         initHeaderAndTitle();
         initMainContainer();
         new News(GWT.getHostPageBaseURL() + "/" + REQUEST_NEWS);
+        new CBRValutes(GWT.getHostPageBaseURL() + "/" + REQUEST_FOREX_RATES);
     }
 }
 

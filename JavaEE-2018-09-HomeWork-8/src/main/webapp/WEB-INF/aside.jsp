@@ -17,5 +17,4 @@
                         <li class="news" id="news3"></li>
                         <li class="news" id="news4"></li>
                     </ul>
-                    <label id="rate">0</label>
                 </aside>

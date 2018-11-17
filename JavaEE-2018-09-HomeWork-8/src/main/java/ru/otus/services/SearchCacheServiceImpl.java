@@ -49,6 +49,7 @@ public class SearchCacheServiceImpl implements SearchCacheService
     @Override
     public List<Emp> searchInCache(Search search)
     {
+        if (null == search) return null;
         Integer hash = search.hashCode();
         LOGGER.info("Searching by hash: {} ...", hash);
         MyElement<Integer, List<Emp>> element = cache.get(hash);

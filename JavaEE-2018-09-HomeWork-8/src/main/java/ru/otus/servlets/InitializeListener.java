@@ -7,10 +7,8 @@ package ru.otus.servlets;
 import ru.otus.services.*;
 import ru.otus.services.SearchCacheService;
 import ru.otus.services.SearchCacheServiceImpl;
-import ru.otus.ws.ForexCBREndpoint;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletContext;
@@ -18,8 +16,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
-import javax.websocket.DeploymentException;
-import javax.websocket.server.ServerContainer;
 
 import static ru.otus.gwt.shared.Constants.*;
 
@@ -43,17 +39,20 @@ public class InitializeListener implements ServletContextListener
         ServletContext ctx = sce.getServletContext();
 
         DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
-        NewsService newsService = new RBCNewsService();
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         StatisticService statisticService = new StatisticCustomTagService(true);
 
         DataRouter dataRouter = new SequentialDataRouter();
+        DataOrigin newsService = new RBCNewsService(ctx);
         DataOrigin forexService = new ForexCBRService(ctx);
+        dataRouter.registerDataOrigin(NEWS_SERVICE, newsService);
         dataRouter.registerDataOrigin(FOREX_SERVICE, forexService);
+        dataRouter.start();
 
         ctx.setAttribute(DB_SERVICE, dbService);
         ctx.setAttribute(ROUTER_SERVICE, dataRouter);
         ctx.setAttribute(NEWS_SERVICE, newsService);
+        ctx.setAttribute(FOREX_SERVICE, forexService);
         ctx.setAttribute(CACHE_SERVICE, cacheService);
         ctx.setAttribute(STAT_SERVICE, statisticService);
 

@@ -2,7 +2,7 @@ package ru.otus.servlets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.services.NewsService;
+import ru.otus.services.DataOrigin;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,12 +26,12 @@ public class NewsServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
     {
         ServletContext sc = getServletContext();
-        NewsService newsService = (NewsService) sc.getAttribute(NEWS_SERVICE);
+        DataOrigin newsService = (DataOrigin) sc.getAttribute(NEWS_SERVICE);
 
         resp.setContentType("text/json; charset=UTF-8");
 
         try (PrintWriter out = resp.getWriter()) {
-            String news = newsService.getNewsJSON(sc);
+            String news = newsService.getDataJSON();
             String mycallback = req.getParameter("mycallback");
             out.println(mycallback + '(' + news + ')');
             LOGGER.info("Gave: " + news.substring(0, 10) + " ...");

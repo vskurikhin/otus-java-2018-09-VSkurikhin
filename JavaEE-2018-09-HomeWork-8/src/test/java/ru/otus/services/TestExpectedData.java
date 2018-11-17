@@ -14,6 +14,8 @@ public class TestExpectedData
             "</organizationUnit>" + System.lineSeparator() +
             "</organizationUnit>" + System.lineSeparator() +
             "</directory>";
+    public static final String XML_TEST = "<?xml version='1.0' encoding='UTF-8'?><Test/>";
+    public static final String JSON_TEST = "{Test:''}";
 
     public static EmpEntity getTestEmpEntity1()
     {

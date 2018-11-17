@@ -1,40 +1,30 @@
 package ru.otus.services;
 
+import javax.websocket.Session;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static ru.otus.services.TestExpectedData.JSON_TEST;
 
 public class SequentialDataRouterTest
 {
     private SequentialDataRouter router;
+    private static String sendedText;
 
-    class TestDataOrigin implements DataOrigin
+    static class Basic extends TestRemoteEndpointBasic
     {
-        private boolean ready = false;
-
         @Override
-        public boolean isReady()
+        public void sendText(String text) throws IOException
         {
-            return ready;
-        }
-
-        @Override
-        public void fetchData()
-        {
-            ready = true;
-        }
-
-        @Override
-        public String getDataXML()
-        {
-            return null;
-        }
-
-        @Override
-        public String getDataJSON()
-        {
-            return null;
+            sendedText = text;
         }
     }
 
@@ -88,13 +78,45 @@ public class SequentialDataRouterTest
         Assert.assertFalse(origin.isReady());
     }
 
-    @Test
-    public void registerDataUpdater()
+    private void registerDataUpdater(Session session)
+    throws InterruptedException
     {
+        DataUpdater updater = new SimpleQueuedUpdater();
+        TestDataOrigin origin = new TestDataOrigin();
+        router.registerDataOrigin("TEST_DATA_ORIGIN", origin);
+        router.registerDataUpdater(session, updater);
     }
 
     @Test
-    public void unregisterDataUpdater()
+    public void registerDataUpdater() throws InterruptedException
     {
+        Session session = mock(Session.class);
+        Mockito.doReturn(new Basic())
+                .when(session)
+                .getBasicRemote();
+        when(session.isOpen()).thenReturn(true);
+
+        registerDataUpdater(session);
+        router.start();
+        Thread.sleep(100);
+        Assert.assertEquals(JSON_TEST, sendedText);
+
+    }
+
+    @Test
+    public void unregisterDataUpdater() throws InterruptedException
+    {
+        Session session = mock(Session.class);
+        Mockito.doReturn(new Basic())
+                .when(session)
+                .getBasicRemote();
+        when(session.isOpen()).thenReturn(true);
+
+        registerDataUpdater(session);
+        router.unregisterDataUpdater(session);
+        router.start();
+        sendedText = null;
+        Thread.sleep(100);
+        Assert.assertNull(sendedText);
     }
 }

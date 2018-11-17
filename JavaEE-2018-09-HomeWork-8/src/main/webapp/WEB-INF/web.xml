@@ -10,16 +10,27 @@
     <display-name>Archetype Created Web Application</display-name>
 
     <context-param>
-    <param-name>RBCNewsServiceFileLocation</param-name>
+        <param-name>RBCNewsServiceFileLocation</param-name>
         <!--<param-value>file:///C:/temp/RBCNews.json</param-value>-->
         <param-value>file:////tmp/RBCNews.json</param-value>
     </context-param>
 
     <context-param>
-    <param-name>CBRForexServiceFileLocation</param-name>
+        <param-name>RBCNewsServiceURLLocation</param-name>
+        <param-value>http://www.rbc.ru/</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>CBRForexServiceFileLocation</param-name>
         <!--<param-value>file:///C:/temp/CBRForex.xml</param-value>-->
         <param-value>file:////tmp/CBRForex.xml</param-value>
     </context-param>
+
+    <context-param>
+        <param-name>CBRForexServiceURLLocation</param-name>
+        <param-value>http://www.cbr.ru/scripts/XML_daily.asp</param-value>
+    </context-param>
+
 
     <context-param>
         <param-name>StatisticEntitiesXMLDataFileLocation</param-name>

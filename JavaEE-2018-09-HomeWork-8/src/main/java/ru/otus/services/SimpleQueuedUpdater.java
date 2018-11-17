@@ -17,7 +17,6 @@ public class SimpleQueuedUpdater implements DataUpdater
     private Session session;
     private Map<String, DataOrigin> sources;
 
-
     @Override
     public void setSession(Session session)
     {

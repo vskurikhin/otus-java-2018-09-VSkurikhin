@@ -21,6 +21,8 @@ public class Constants
     public static final String REQUEST_VISITS_STAT_JSP = "inside/stat.do";
     public static final String REQUEST_VISITS_SWITCH_COLLECTION = "inside/switch_collection_enabled";
 
+    public static final String ENDPOINT_PUBLIC = "wspublic";
+
     public static final String DEFAULT_MARKER_NAME = "DEFAULT_MARKER";
     public static final String ENVIRONMENT_MARKER_NAME = "MARKER_NAME";
     public static final String HEADER_USER_AGENT = "User-Agent";
@@ -46,9 +48,12 @@ public class Constants
     public static final String COOKIE_NAME_BROWSER_SUPPORT_CHECK_PASSED = "BrowserSupportCheckPassed";
     public static final String BROWSERS_VERSION_FILTER ="BrowsersVersionFilter";
 
-    public static final int TIMEOUT = 1100;
+    public static final String XML_ERROR = "<?xml version='1.0' encoding='UTF-8'?><Error/>";
+    public static final String EMPTY = "";
 
-    public static final int DEFAULT_UPDATE_PERIOD = 4;
+    public static final int TIMEOUT = 800;
+
+    public static final int DEFAULT_UPDATE_PERIOD = 4000; // 4s
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
