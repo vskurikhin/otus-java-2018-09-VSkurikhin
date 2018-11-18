@@ -8,7 +8,6 @@ import org.jsoup.nodes.Document;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
 import static ru.otus.gwt.shared.Constants.TIMEOUT;
@@ -23,7 +22,7 @@ public class RBCNewsService extends DataOriginFetching
     private ServletContext ctx;
     private String path = null;
     private String url = null;
-    private AtomicBoolean ready = new AtomicBoolean();
+    private boolean ready = false;
 
     public RBCNewsService(ServletContext context)
     {
@@ -33,9 +32,14 @@ public class RBCNewsService extends DataOriginFetching
     }
 
     @Override
-    public boolean isReady()
+    public synchronized boolean isReady()
     {
-        return ready.get();
+        return ready;
+    }
+
+    private synchronized void setReady(Boolean ready)
+    {
+        this.ready = ready;
     }
 
     void sbAppendElement(StringBuilder sb, Document doc, int i)
@@ -57,6 +61,7 @@ public class RBCNewsService extends DataOriginFetching
 
     String getJsonFromURL(String url, int timeout) throws IOException
     {
+        System.out.println("url = " + url);
         Document doc = Jsoup.parse(new URL(url), timeout);
 
         return cutOutJsonFromDocument(doc);
@@ -68,13 +73,13 @@ public class RBCNewsService extends DataOriginFetching
 
         try {
             String json = getJsonFromURL(url, TIMEOUT);
-            ready.lazySet(false);
+            setReady(false);
             saveResultToTruncatedFile(json, path);
-            ready.set(true);
+            setReady(true);
             LOGGER.info("saveJsonToFile: ready.set(true).");
         }
         catch (Exception e) {
-            LOGGER.info("saveJsonToFile: catch({}): {}", e.getClass(), e);
+            LOGGER.error("saveJsonToFile: catch({}): {}", e.getClass(), e);
         }
     }
 
@@ -96,3 +101,7 @@ public class RBCNewsService extends DataOriginFetching
         return loadFromFile(path, LOGGER);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

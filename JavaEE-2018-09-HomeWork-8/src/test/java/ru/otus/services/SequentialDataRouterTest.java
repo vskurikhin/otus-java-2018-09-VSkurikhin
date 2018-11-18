@@ -50,32 +50,20 @@ public class SequentialDataRouterTest
     }
 
     @Test
-    public void isRunning() throws InterruptedException
-    {
-        router.start();
-        Thread.sleep(100);
-        Assert.assertTrue(router.getRUNNING());
-    }
-
-    @Test
     public void registerDataOrigin() throws InterruptedException
     {
-        TestDataOrigin origin = new TestDataOrigin();
-        router.registerDataOrigin("TEST_DATA_ORIGIN", origin);
-        router.start();
-        Thread.sleep(100);
-        Assert.assertTrue(origin.isReady());
-    }
+        Assert.assertFalse(router.isRunning());
 
-    @Test
-    public void unregisterDataOrigin() throws InterruptedException
-    {
         TestDataOrigin origin = new TestDataOrigin();
         router.registerDataOrigin("TEST_DATA_ORIGIN", origin);
-        router.unregisterDataOrigin("TEST_DATA_ORIGIN");
         router.start();
-        Thread.sleep(100);
-        Assert.assertFalse(origin.isReady());
+        Thread.sleep(50);
+        Assert.assertTrue(router.isRunning());
+        Assert.assertTrue(origin.isReady());
+
+        router.unregisterDataOrigin("TEST_DATA_ORIGIN");
+        router.shutdown();
+        Assert.assertFalse(router.isRunning());
     }
 
     private void registerDataUpdater(Session session)
@@ -98,25 +86,14 @@ public class SequentialDataRouterTest
 
         registerDataUpdater(session);
         router.start();
-        Thread.sleep(100);
+        Thread.sleep(50);
         Assert.assertEquals(JSON_TEST, sendedText);
 
-    }
-
-    @Test
-    public void unregisterDataUpdater() throws InterruptedException
-    {
-        Session session = mock(Session.class);
-        Mockito.doReturn(new Basic())
-                .when(session)
-                .getBasicRemote();
-        when(session.isOpen()).thenReturn(true);
-
-        registerDataUpdater(session);
         router.unregisterDataUpdater(session);
         router.start();
         sendedText = null;
-        Thread.sleep(100);
+        Thread.sleep(50);
         Assert.assertNull(sendedText);
+        router.shutdown();
     }
 }

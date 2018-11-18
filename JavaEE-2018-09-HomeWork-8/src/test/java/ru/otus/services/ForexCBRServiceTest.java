@@ -17,15 +17,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 import static org.mockito.Mockito.mock;
+import static ru.otus.gwt.shared.Constants.XML_ERROR;
 import static ru.otus.utils.IO.readFile;
 
 public class ForexCBRServiceTest
 {
-    static ServletContext ctx;
-    private HttpServer server;
-    private ForexCBRService service;
-
-    private HttpRequestHandler myHttpRequestHandler = (request, response, context) -> {
+    private static int port;;
+    private static ServletContext ctx;
+    private static HttpServer server;
+    private static HttpRequestHandler myHttpRequestHandler = (request, response, context) -> {
         response.setEntity(new StringEntity(
             "<?xml version='1.0' encoding='UTF-8'?>\n" +
             "<ValCurs Date='17.11.2018' name='Foreign Currency Market'>\n" +
@@ -54,37 +54,47 @@ public class ForexCBRServiceTest
         ));
         response.setHeader("Content-Type", "text/xml; charset=" + ForexCBRService.ENCODING);
     };
+
+    private ForexCBRService service;
+
     @BeforeClass
-    public static void setupServletContext()
+    public static void setupServletContext() throws IOException
     {
         File tmp = new File("target/" + ForexCBRServiceTest.class.getName() + ".xml");
         URI uri = tmp.toURI();
         ctx = mock(ServletContext.class);
+
         Mockito.doReturn(uri.toString())
                .when(ctx)
                .getInitParameter(ForexCBRService.DATA_FILE_LOCATION);
+
+        server = new HttpServer();
+        server.registerHandler("/forex*", myHttpRequestHandler);
+        server.start();
+        port = server.getPort();
+
+        Mockito.doReturn("http://localhost:" + port + "/forex")
+                .when(ctx)
+                .getInitParameter(ForexCBRService.CBR_DAILY_URL_LOCATION);
+    }
+
+    @AfterClass
+    public static void serverHttpShutdown()
+    {
+        server.shutdown();
+        server = null;
     }
 
     @Before
     public void setUp() throws Exception
     {
-        server = new HttpServer();
-        server.registerHandler("/*", myHttpRequestHandler);
-        server.start();
-        int port = server.getPort();
-        System.out.println("port = " + port);
-        Mockito.doReturn("http://localhost:" + port)
-                .when(ctx)
-                .getInitParameter(ForexCBRService.CBR_DAILY_URL_LOCATION);
         service = new ForexCBRService(ctx);
     }
 
     @After
     public void tearDown() throws Exception
     {
-        server.shutdown();
         service = null;
-        server = null;
     }
 
     private String getPathDataFileLocation() throws URISyntaxException
@@ -93,44 +103,29 @@ public class ForexCBRServiceTest
         return Paths.get(new URI(uri)).toString();
     }
 
-    public void fetchDataLoop()
-    {
-        for (int i = 0; i < 3 && ! service.isReady(); ++i)
-            service.fetchData();
-    }
-
     @Test
-    public void fetchData()
+    public void getDataJTest() throws URISyntaxException, IOException, InterruptedException
     {
+        Assert.assertFalse(service.isReady());
+        Assert.assertEquals(XML_ERROR, service.getDataXML());
+
         service.fetchData();
+
+        Thread.sleep(1000);
+
         Assert.assertTrue(service.isReady());
-    }
-
-    @Test
-    public void getDataXML() throws URISyntaxException, IOException
-    {
-        service.fetchData();
 
         String path = getPathDataFileLocation();
-        String result = service.getDataXML();
-        String expected = readFile(path, StandardCharsets.UTF_8);
+        String expectedXML = readFile(path, StandardCharsets.UTF_8);
+        String expectedJson = XML.toJSONObject(expectedXML).toString();
+        String resultXML = service.getDataXML();
+        String resultJson = service.getDataJSON();
 
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.length() > 0);
-        Assert.assertEquals(expected, result);
-    }
-
-    @Test
-    public void getDataJSON() throws URISyntaxException, IOException
-    {
-        fetchDataLoop();
-
-        String path = getPathDataFileLocation();
-        String expected = XML.toJSONObject(readFile(path, StandardCharsets.UTF_8)).toString();
-        String result = service.getDataJSON();
-
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.length() > 0);
-        Assert.assertEquals(expected, result);
+        Assert.assertNotNull(resultXML);
+        Assert.assertNotNull(resultJson);
+        Assert.assertTrue(resultXML.length() > 0);
+        Assert.assertTrue(resultJson.length() > 0);
+        Assert.assertEquals(expectedXML, resultXML);
+        Assert.assertEquals(expectedJson, resultJson);
     }
 }

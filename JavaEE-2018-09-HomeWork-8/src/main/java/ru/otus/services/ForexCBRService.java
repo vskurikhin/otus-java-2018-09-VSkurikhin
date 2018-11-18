@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.json.XML;
 
 import javax.servlet.ServletContext;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ru.otus.gwt.shared.Constants.TIMEOUT;
 import static ru.otus.utils.IO.saveResultToTruncatedFile;
@@ -28,7 +27,7 @@ public class ForexCBRService extends DataOriginFetching
     private ServletContext ctx;
     private String path = null;
     private String url = null;
-    private AtomicBoolean ready = new AtomicBoolean(false);
+    private boolean ready = false;
 
     public ForexCBRService(ServletContext context)
     {
@@ -38,9 +37,14 @@ public class ForexCBRService extends DataOriginFetching
     }
 
     @Override
-    public boolean isReady()
+    public synchronized boolean isReady()
     {
-        return ready.get();
+        return ready;
+    }
+
+    private synchronized void setReady(Boolean ready)
+    {
+        this.ready = ready;
     }
 
     private void saveXMLToFile()
@@ -49,13 +53,13 @@ public class ForexCBRService extends DataOriginFetching
 
         try {
             String xml = fetchURL(url, TIMEOUT, ENCODING).replaceFirst(encoding1, encoding2);
-            ready.set(false);
+            setReady(false);
             saveResultToTruncatedFile(xml, path);
-            ready.set(true);
+            setReady(true);
             LOGGER.info("getCurrencyExchangeRates: ready.set(true).");
         }
         catch (Exception e) {
-            LOGGER.info("getCurrencyExchangeRates: catch({}): {}", e.getClass(), e);
+            LOGGER.error("getCurrencyExchangeRates: catch({}): {}", e.getClass(), e);
         }
     }
 

@@ -11,7 +11,6 @@ import javax.websocket.Session;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ru.otus.gwt.shared.Constants.DEFAULT_UPDATE_PERIOD;
 
@@ -19,12 +18,22 @@ public class SequentialDataRouter implements DataRouter
 {
     private static final Logger LOGGER = LogManager.getLogger(SequentialDataRouter.class.getName());
 
-    private final AtomicBoolean RUNNING = new AtomicBoolean(false);
     private final ConcurrentHashMap<String, DataOrigin> SOURCES = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Session, DataUpdater> HANDLERS = new ConcurrentHashMap<>();
 
+    private boolean running = false;
     private int updatePeriod = DEFAULT_UPDATE_PERIOD;
     private Thread thread = null;
+
+    public synchronized boolean isRunning()
+    {
+        return running;
+    }
+
+    private synchronized void setRunning(boolean running)
+    {
+        this.running = running;
+    }
 
     public int getUpdatePeriod()
     {
@@ -34,11 +43,6 @@ public class SequentialDataRouter implements DataRouter
     public void setUpdatePeriod(int updatePeriod)
     {
         this.updatePeriod = updatePeriod;
-    }
-
-    public boolean getRUNNING()
-    {
-        return RUNNING.get();
     }
 
     @Override
@@ -86,10 +90,10 @@ public class SequentialDataRouter implements DataRouter
 
     private void run()
     {
-        RUNNING.set(true);
+        setRunning(true);
 
         //noinspection InfiniteLoopStatement
-        while (RUNNING.get()) {
+        while (isRunning()) {
             long startNs = System.nanoTime();
 
             LOGGER.info("run: iterate run in {}", this);
@@ -102,8 +106,8 @@ public class SequentialDataRouter implements DataRouter
             long delay = (updatePeriod - (delta < updatePeriod ? delta : 0)) / 10;
 
             try {
-                for (int i = 0; i < 10 && RUNNING.get(); ++i)
-                    Thread.currentThread().sleep(delay);
+                for (int i = 0; i < 10 && isRunning(); ++i)
+                    Thread.sleep(delay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 LOGGER.info("run: catch({}): {}", e.getClass(), e);
@@ -122,10 +126,10 @@ public class SequentialDataRouter implements DataRouter
     @Override
     public void shutdown() throws InterruptedException
     {
-        RUNNING.set(false);
-        if (null != thread) {
-            Thread.currentThread().sleep(updatePeriod);
-            if (thread.isAlive()) thread.interrupt();
+        setRunning(false);
+        if (null != thread && thread.isAlive()) {
+            Thread.sleep(updatePeriod / 10);
+            thread.interrupt();
         }
     }
 

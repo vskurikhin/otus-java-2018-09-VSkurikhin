@@ -216,4 +216,12 @@ public class EmpEntityTest
         assertEquals(expectedArray[1], entity.getSecondName());
         assertEquals(expectedArray[2], entity.getSurName());
     }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testIndexOutOfBoundsException() // TODO Custom exception
+    {
+        String expected = "";
+        EmpEntity entity = new EmpEntity();
+        entity.setName(expected);
+    }
 }

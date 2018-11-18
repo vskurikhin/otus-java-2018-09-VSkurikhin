@@ -21,11 +21,10 @@ import static ru.otus.utils.IO.readFile;
 
 public class RBCNewsServiceTest
 {
-    static ServletContext ctx;
-    private HttpServer server;
-    private RBCNewsService service;
-
-    private HttpRequestHandler myHttpRequestHandler = (request, response, context) -> {
+    private static int port;
+    private static ServletContext ctx;
+    private static HttpServer server;
+    private static HttpRequestHandler myHttpRequestHandler = (request, response, context) -> {
         response.setEntity(new StringEntity(
             "<div class='news-feed__item__title'>test1</div>\n" +
             "<div class='news-feed__item__title'>test2</div>\n" +
@@ -35,8 +34,10 @@ public class RBCNewsServiceTest
         ));
     };
 
+    private RBCNewsService service;
+
     @BeforeClass
-    public static void setupServletContext()
+    public static void setupServletContext() throws IOException
     {
         File tmp = new File("target/" + RBCNewsService.class.getName() + ".xml");
         URI uri = tmp.toURI();
@@ -44,28 +45,34 @@ public class RBCNewsServiceTest
         Mockito.doReturn(uri.toString())
                .when(ctx)
                .getInitParameter(RBCNewsService.DATA_FILE_LOCATION);
+
+        server = new HttpServer();
+        server.registerHandler("/news*", myHttpRequestHandler);
+        server.start();
+        port = server.getPort();
+
+        Mockito.doReturn("http://localhost:" + port + "/news")
+                .when(ctx)
+                .getInitParameter(RBCNewsService.NEWS_URL_LOCATION);
     }
 
     @Before
     public void setUp() throws Exception
     {
-        server = new HttpServer();
-        server.registerHandler("/*", myHttpRequestHandler);
-        server.start();
-        int port = server.getPort();
-        System.out.println("port = " + port);
-        Mockito.doReturn("http://localhost:" + port)
-                .when(ctx)
-                .getInitParameter(RBCNewsService.NEWS_URL_LOCATION);
         service = new RBCNewsService(ctx);
+    }
+
+    @AfterClass
+    public static void serverHttpShutdown()
+    {
+        server.shutdown();
+        server = null;
     }
 
     @After
     public void tearDown() throws Exception
     {
-        server.shutdown();
         service = null;
-        server = null;
     }
 
     private String getPathDataFileLocation() throws URISyntaxException
@@ -75,17 +82,15 @@ public class RBCNewsServiceTest
     }
 
     @Test
-    public void fetchData()
+    public void getDataTest() throws URISyntaxException, IOException
     {
+        Assert.assertFalse(service.isReady());
+
+        Assert.assertNull(service.getDataXML());
+
         service.fetchData();
 
         Assert.assertTrue(service.isReady());
-    }
-
-    @Test
-    public void getDataJSON() throws URISyntaxException, IOException
-    {
-        service.fetchData();
 
         String path = getPathDataFileLocation();
         String result = service.getDataJSON();
@@ -94,11 +99,5 @@ public class RBCNewsServiceTest
         Assert.assertNotNull(result);
         Assert.assertTrue(result.length() > 0);
         Assert.assertEquals(expected, result);
-    }
-
-    @Test
-    public void getDataXML()
-    {
-        Assert.assertNull(service.getDataXML());
     }
 }

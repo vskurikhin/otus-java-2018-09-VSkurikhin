@@ -17,6 +17,11 @@ public class SimpleQueuedUpdater implements DataUpdater
     private Session session;
     private Map<String, DataOrigin> sources;
 
+    public Session getSession()
+    {
+        return session;
+    }
+
     @Override
     public void setSession(Session session)
     {
@@ -29,7 +34,7 @@ public class SimpleQueuedUpdater implements DataUpdater
         this.sources = sources;
     }
 
-    private void sendDataFromOrigin(String name, DataOrigin origin)
+    protected void sendDataFromOrigin(String name, DataOrigin origin)
     {
         try {
             /* Send the new rate to all open WebSocket sessions */

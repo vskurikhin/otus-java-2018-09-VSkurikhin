@@ -97,7 +97,7 @@ public class EmpEntity implements DataSet, Serializable
     {
         String names[] = name.split(" ");
         if (names.length != 3)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException(); // TODO Custom exception
         setFirstName(names[0]);
         setSecondName(names[1]);
         setSurName(names[2]);
