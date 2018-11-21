@@ -56,6 +56,7 @@ public class Constants
     public static final int TIMEOUT = 800;
 
     public static final int DEFAULT_UPDATE_PERIOD = 4000; // 4s
+    public static final String BROADCASTER_UPDATE_INTERVAL_PARAMETER = "BroadcasterUpdateInterval";
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

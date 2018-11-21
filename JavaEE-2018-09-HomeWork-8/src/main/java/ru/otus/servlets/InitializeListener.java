@@ -42,14 +42,26 @@ public class InitializeListener implements ServletContextListener
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         StatisticCustomTagService statisticService = new StatisticCustomTagService(dbService, true);
 
-        DataBroadcaster dataPublicBroadcaster = new SequentialDataBroadcaster();
+
+        int interval = 0;
+        try {
+            interval = Integer.parseInt(ctx.getInitParameter(BROADCASTER_UPDATE_INTERVAL_PARAMETER));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        interval = interval > 5000 ? interval : 5000;
+
+
+        DataBroadcaster dataPublicBroadcaster = new SequentialDataBroadcaster(interval);
         DataOrigin newsService = new RBCNewsService(ctx);
         DataOrigin forexService = new ForexCBRService(ctx);
         dataPublicBroadcaster.registerDataOrigin(NEWS_SERVICE, newsService);
+
         dataPublicBroadcaster.registerDataOrigin(FOREX_SERVICE, forexService);
         dataPublicBroadcaster.start();
 
-        DataBroadcaster dataInsideBroadcaster = new SequentialDataBroadcaster();
+        DataBroadcaster dataInsideBroadcaster = new SequentialDataBroadcaster(interval);
         dataInsideBroadcaster.registerDataOrigin(STAT_SERVICE, statisticService);
         dataInsideBroadcaster.start();
 

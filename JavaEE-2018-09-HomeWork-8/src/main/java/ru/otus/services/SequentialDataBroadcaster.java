@@ -26,6 +26,12 @@ public class SequentialDataBroadcaster implements DataBroadcaster
     private int updatePeriod = DEFAULT_UPDATE_PERIOD;
     private Thread thread = null;
 
+    public SequentialDataBroadcaster() {}
+
+    public SequentialDataBroadcaster(int interval) {
+        this.updatePeriod = interval;
+    }
+
     public synchronized boolean isRunning()
     {
         return running;

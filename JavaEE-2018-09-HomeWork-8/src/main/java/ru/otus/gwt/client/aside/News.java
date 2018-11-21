@@ -6,7 +6,6 @@ package ru.otus.gwt.client.aside;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -16,8 +15,12 @@ public class News
 {
     private AsyncCallback callbackCBR = new AsyncCallback<JSONreceiver>()
     {
+        native void consoleError(String message) /*-{
+            console.error( "News:" + message );
+        }-*/;
+
         public void onFailure(Throwable throwable) {
-            Window.alert("Error: " + throwable.getMessage());
+            consoleError("Error: " + throwable.getMessage());
         }
 
         @Override

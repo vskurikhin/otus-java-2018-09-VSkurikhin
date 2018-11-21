@@ -21,6 +21,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode
 @Entity
+@Cacheable(false)
 @Table(name = "statistic")
 @NamedStoredProcedureQuery(
     name = "insert_statistic",

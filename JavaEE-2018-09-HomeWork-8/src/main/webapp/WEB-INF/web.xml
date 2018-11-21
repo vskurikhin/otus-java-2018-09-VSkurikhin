@@ -57,6 +57,11 @@
         <param-value>/WEB-INF/classes/UsersgroupEntities.xml</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>BroadcasterUpdateInterval</param-name>
+        <param-value>5000</param-value>
+    </context-param>
+
     <welcome-file-list>
         <welcome-file>redirect.jsp</welcome-file>
     </welcome-file-list>
