@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class TestExpectedData
 {
+    public static int TEST_DELAY = 100;
     public static final String directory =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator() +
             "<directory>" + System.lineSeparator() +

@@ -43,7 +43,7 @@ public class Constants
     public static final String SAFARI = "Safari";
 
     public static final int MIN_VERSION_OPERA = 38;
-    public static final int MIN_VERSION_FIREFOX = 63;
+    public static final int MIN_VERSION_FIREFOX = 45;
     public static final int MIN_VERSION_CHROME = 50;
     public static final int MIN_VERSION_IE = 10;
 

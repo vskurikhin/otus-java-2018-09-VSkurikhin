@@ -43,6 +43,7 @@ public class PublicEndpoint
 
     @OnOpen
     public void open(Session session, EndpointConfig config) {
+        LOGGER.info("opening....: {}", session.getId());
         this.config = config;
         this.broadcaster = getBroadcaster();
         if (null != broadcaster) {

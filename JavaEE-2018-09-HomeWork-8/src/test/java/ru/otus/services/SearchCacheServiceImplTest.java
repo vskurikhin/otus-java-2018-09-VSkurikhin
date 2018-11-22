@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.otus.gwt.shared.Constants.EMPTY;
+import static ru.otus.services.TestExpectedData.TEST_DELAY;
 
 public class SearchCacheServiceImplTest
 {
@@ -61,7 +62,7 @@ public class SearchCacheServiceImplTest
         Search search = new Search();
         searchCacheService.putToCache(search, new ArrayList<>());
         Assert.assertNotNull(searchCacheService.searchInCache(search));
-        Thread.sleep(50);
+        Thread.sleep(TEST_DELAY);
         Assert.assertNull(searchCacheService.searchInCache(search));
     }
 }
