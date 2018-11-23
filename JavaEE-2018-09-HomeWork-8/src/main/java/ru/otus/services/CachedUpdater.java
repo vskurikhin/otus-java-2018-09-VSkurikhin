@@ -32,8 +32,7 @@ public class CachedUpdater extends SimpleQueuedUpdater
                     sizes.put(origin, msg.length());
                     LOGGER.info("Prepare Sending size:{}, hash:{} to session: {}", size, hash, getSession().getId());
                     getSession().getBasicRemote().sendText(msg);
-                    String msgLogger = msg.length() > 100 ? msg.substring(0, 100) : msg;
-                    LOGGER.info("Sending {} to session: {}", msgLogger, getSession().getId());
+                    LOGGER.info("Sending {} to session: {}", msg.substring(0, 100), getSession().getId());
                 }
             }
         } catch (Throwable e) {

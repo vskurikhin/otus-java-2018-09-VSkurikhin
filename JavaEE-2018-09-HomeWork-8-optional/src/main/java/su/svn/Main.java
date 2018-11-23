@@ -18,7 +18,7 @@ public class Main
             );
 
             // add listener
-            clientEndPoint.addMessageHandler(new WebsocketClientEndpoint.MessageHandler() {
+            clientEndPoint.addMessageHandler(new WebsocketClientEndpoint.Handler() {
                 public void handleMessage(String message) {
                     System.out.println(message);
                 }

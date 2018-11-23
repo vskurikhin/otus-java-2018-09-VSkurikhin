@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import org.apache.http.testserver.HttpServer;
 
 import static org.mockito.Mockito.mock;
-import static ru.otus.services.TestExpectedData.TEST_DELAY;
+import static ru.otus.services.TestExpectedData.DELAY_TEST;
 import static ru.otus.utils.IO.readFile;
 
 public class RBCNewsServiceTest
@@ -91,7 +91,7 @@ public class RBCNewsServiceTest
 
         service.fetchData();
 
-        Thread.sleep(TEST_DELAY);
+        Thread.sleep(DELAY_TEST);
 
         Assert.assertTrue(service.isReady());
 

@@ -100,10 +100,16 @@
             <artifactId>javax.websocket-client-api</artifactId>
             <version>${websocket.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client</artifactId>
-            <version>${websocket.client.version}</version>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>${websocket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-grizzly</artifactId>
+            <version>${websocket.version}</version>
         </dependency>
 
         <!-- ========================================================================= -->

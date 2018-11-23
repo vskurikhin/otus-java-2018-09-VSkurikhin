@@ -26,7 +26,7 @@ function getCookie(name) {
 function logToStatistics(pageID) {
     var xhr = new XMLHttpRequest();
 
-    xhr.open('POST', 'http://' + location.host + '/homework8/stats/insert', true);
+    xhr.open('POST', 'stats/insert', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
     xhr.onreadystatechange = function () {

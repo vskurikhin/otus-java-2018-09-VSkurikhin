@@ -7,11 +7,11 @@ import javax.websocket.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@ClientEndpoint
 public class WebsocketClientEndpoint extends Endpoint
 {
     public static final String url = "http://localhost:8080/homework8/";
@@ -46,7 +46,12 @@ public class WebsocketClientEndpoint extends Endpoint
     }
 
     Session userSession = null;
-    private MessageHandler messageHandler;
+    private Handler messageHandler;
+
+    public WebsocketClientEndpoint()
+    {
+        super();
+    }
 
     public WebsocketClientEndpoint(URI endpointURI)
     {
@@ -67,6 +72,8 @@ public class WebsocketClientEndpoint extends Endpoint
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             ClientEndpointConfig.Builder builder = ClientEndpointConfig.Builder
                      .create()
+                     .encoders(Collections.singletonList(CustomWSEncoder.class))
+                     .decoders(Collections.singletonList(CustomWSDecoder.class))
                      .configurator(new Config());
             container.connectToServer(this, builder.build(), endpointURI);
         } catch (Exception e) {
@@ -84,6 +91,8 @@ public class WebsocketClientEndpoint extends Endpoint
     {
         System.out.println("opening websocket");
         this.userSession = userSession;
+
+        userSession.addMessageHandler((MessageHandler.Whole<String>) this::handleMessage);
     }
 
     /**
@@ -92,8 +101,8 @@ public class WebsocketClientEndpoint extends Endpoint
      * @param userSession the userSession which is getting closed.
      * @param reason      the reason for connection close
      */
-    @OnClose
-    public void onClose(Session userSession, CloseReason reason)
+    @Override
+    public void onClose(Session session, CloseReason closeReason)
     {
         System.out.println("closing websocket");
         this.userSession = null;
@@ -104,13 +113,19 @@ public class WebsocketClientEndpoint extends Endpoint
      *
      * @param message The text message
      */
-    @OnMessage
-    public void onMessage(String message)
+    public void handleMessage(final String message)
     {
+        System.out.println("message = " + message);
         if (this.messageHandler != null) {
-            System.out.println("message = " + message);
             this.messageHandler.handleMessage(message);
         }
+    }
+
+    @Override
+    public void onError(Session session, Throwable thr)
+    {
+        System.out.println("Error = " + thr);
+        thr.printStackTrace();
     }
 
     /**
@@ -118,7 +133,7 @@ public class WebsocketClientEndpoint extends Endpoint
      *
      * @param msgHandler
      */
-    public void addMessageHandler(MessageHandler msgHandler)
+    public void addMessageHandler(Handler msgHandler)
     {
         this.messageHandler = msgHandler;
     }
@@ -138,7 +153,7 @@ public class WebsocketClientEndpoint extends Endpoint
      *
      * @author Jiji_Sasidharan
      */
-    public interface MessageHandler
+    public interface Handler
     {
         public void handleMessage(String message);
     }

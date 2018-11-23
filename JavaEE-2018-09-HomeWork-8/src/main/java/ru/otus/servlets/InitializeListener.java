@@ -38,30 +38,18 @@ public class InitializeListener implements ServletContextListener
         System.out.println("On start web app ...");
         ServletContext ctx = sce.getServletContext();
 
-        DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
+        DbService dbService = new DbSQLService(emf.createEntityManager());
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         StatisticCustomTagService statisticService = new StatisticCustomTagService(dbService, true);
 
-
-        int interval = 0;
-        try {
-            interval = Integer.parseInt(ctx.getInitParameter(BROADCASTER_UPDATE_INTERVAL_PARAMETER));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        interval = interval > 5000 ? interval : 5000;
-
-
-        DataBroadcaster dataPublicBroadcaster = new SequentialDataBroadcaster(interval);
+        DataBroadcaster dataPublicBroadcaster = new SequentialDataBroadcaster();
         DataOrigin newsService = new RBCNewsService(ctx);
         DataOrigin forexService = new ForexCBRService(ctx);
         dataPublicBroadcaster.registerDataOrigin(NEWS_SERVICE, newsService);
-
         dataPublicBroadcaster.registerDataOrigin(FOREX_SERVICE, forexService);
         dataPublicBroadcaster.start();
 
-        DataBroadcaster dataInsideBroadcaster = new SequentialDataBroadcaster(interval);
+        DataBroadcaster dataInsideBroadcaster = new SequentialDataBroadcaster();
         dataInsideBroadcaster.registerDataOrigin(STAT_SERVICE, statisticService);
         dataInsideBroadcaster.start();
 

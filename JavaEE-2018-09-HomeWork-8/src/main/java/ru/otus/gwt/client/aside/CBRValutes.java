@@ -14,10 +14,6 @@ import com.google.gwt.xml.client.Document;
 
 public class CBRValutes
 {
-    native void consoleError(String message) /*-{
-        console.error( "CBRValutes:" + message );
-    }-*/;
-
     private String xmlText;
     private final RequestCallback callback = new RequestCallback()
     {
@@ -53,9 +49,7 @@ public class CBRValutes
 
         @Override
         public void onError(Request request, Throwable exception)
-        {
-            consoleError("Error: " + exception.getMessage());
-        }
+        { /* None */ }
     };
 
     public CBRValutes(String url)
@@ -65,7 +59,7 @@ public class CBRValutes
         try {
             requestBuilder.sendRequest(null, callback);
         } catch (RequestException e) {
-            consoleError("Could not parse XML document." + e);
+            Window.alert("Could not parse XML document." + e);
         }
     }
 }

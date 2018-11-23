@@ -10,6 +10,5 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>jdbc/PostgresMyDB</non-jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
     </persistence-unit>
 </persistence>

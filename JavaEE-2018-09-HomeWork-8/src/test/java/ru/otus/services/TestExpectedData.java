@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 public class TestExpectedData
 {
-    public static int TEST_DELAY = 100;
     public static final String directory =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator() +
             "<directory>" + System.lineSeparator() +
@@ -19,6 +18,7 @@ public class TestExpectedData
             "</directory>";
     public static final String XML_TEST = "<?xml version='1.0' encoding='UTF-8'?><Test/>";
     public static final String JSON_TEST = "{Test:''}";
+    public static final int DELAY_TEST = 150;
 
     public static DeptEntity getTestDeptEntity1()
     {

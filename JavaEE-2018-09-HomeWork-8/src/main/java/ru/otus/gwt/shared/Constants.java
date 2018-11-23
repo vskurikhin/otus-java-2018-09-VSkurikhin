@@ -43,7 +43,7 @@ public class Constants
     public static final String SAFARI = "Safari";
 
     public static final int MIN_VERSION_OPERA = 38;
-    public static final int MIN_VERSION_FIREFOX = 45;
+    public static final int MIN_VERSION_FIREFOX = 63;
     public static final int MIN_VERSION_CHROME = 50;
     public static final int MIN_VERSION_IE = 10;
 
@@ -56,7 +56,6 @@ public class Constants
     public static final int TIMEOUT = 800;
 
     public static final int DEFAULT_UPDATE_PERIOD = 4000; // 4s
-    public static final String BROADCASTER_UPDATE_INTERVAL_PARAMETER = "BroadcasterUpdateInterval";
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

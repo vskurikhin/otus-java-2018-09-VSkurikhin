@@ -37,13 +37,11 @@ public class PublicEndpoint
     private DataBroadcaster getBroadcaster()
     {
         HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
-        LOGGER.info("httpSession {}.", httpSession);
         return (DataBroadcaster) httpSession.getServletContext().getAttribute(BROADCASTER_PUBLIC_SERVICE);
     }
 
     @OnOpen
     public void open(Session session, EndpointConfig config) {
-        LOGGER.info("opening....: {}", session.getId());
         this.config = config;
         this.broadcaster = getBroadcaster();
         if (null != broadcaster) {
