@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:30.
+ * Created by VSkurikhin 28.11.18 20:30.
  * GroupEntity.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

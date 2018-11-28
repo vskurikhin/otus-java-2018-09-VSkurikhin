@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:31.
+ * Created by VSkurikhin 28.11.18 20:31.
  * SimpleQueuedUpdater.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 23:56.
+ * Created by VSkurikhin 27.11.18 23:56.
  * CurrentTaxConsoleService.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

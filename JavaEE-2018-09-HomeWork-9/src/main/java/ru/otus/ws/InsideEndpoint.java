@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:35.
+ * Created by VSkurikhin 28.11.18 20:35.
  * InsideEndpoint.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

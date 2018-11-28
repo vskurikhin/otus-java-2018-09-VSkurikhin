@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:32.
+ * Created by VSkurikhin 28.11.18 20:32.
  * ForexCBRServlet.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 23:38.
+ * Created by VSkurikhin 28.11.18 23:38.
  * AbstractController.java
  * $Id$
  * This is free and unencumbered software released into the public domain.

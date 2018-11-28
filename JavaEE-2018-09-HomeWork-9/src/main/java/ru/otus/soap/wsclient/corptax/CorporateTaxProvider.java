@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:34.
+ * Created by VSkurikhin 28.11.18 20:34.
  * CorporateTaxProvider.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -7,7 +7,7 @@
  */
 
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 21:01.
+ * Created by VSkurikhin 27.11.18 21:01.
  * CorporateTaxProvider.java
  * $Id$
  *

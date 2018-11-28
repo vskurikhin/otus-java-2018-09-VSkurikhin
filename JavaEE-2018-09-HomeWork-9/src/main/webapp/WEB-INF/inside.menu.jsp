@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
-  ~ Copyright (c) Victor N. Skurikhin 27.11.18 23:16.
+  ~ Created by VSkurikhin 27.11.18 23:16.
   ~ inside.menu.jsp
   ~ $Id$
   ~ This is free and unencumbered software released into the public domain.

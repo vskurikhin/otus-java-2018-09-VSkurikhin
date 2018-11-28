@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 21:06.
+ * Created by VSkurikhin 28.11.18 21:06.
  * UserEntityJsonAdapter.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
