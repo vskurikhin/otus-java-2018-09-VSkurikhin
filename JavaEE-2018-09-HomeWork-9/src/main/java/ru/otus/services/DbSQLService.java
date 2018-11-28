@@ -1,16 +1,12 @@
 /*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:31.
+ * DbSQLService.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.services;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import ru.otus.db.DBConf;
 import ru.otus.db.PostgreSQLService;

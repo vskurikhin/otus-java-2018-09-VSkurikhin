@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:34.
+ * CorporateTaxProvider.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
 
 /*
  * Copyright (c) Victor N. Skurikhin 27.11.18 21:01.
@@ -56,3 +63,7 @@ public interface CorporateTaxProvider {
         Double arg2);
 
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

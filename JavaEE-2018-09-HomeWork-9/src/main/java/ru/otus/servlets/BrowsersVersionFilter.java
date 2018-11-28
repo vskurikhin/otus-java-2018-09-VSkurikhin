@@ -1,8 +1,12 @@
-package ru.otus.servlets;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:32.
+ * BrowsersVersionFilter.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.servlets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

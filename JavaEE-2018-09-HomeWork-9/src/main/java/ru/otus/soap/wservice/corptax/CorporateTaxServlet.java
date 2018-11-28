@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 23:59.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:33.
  * CorporateTaxServlet.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -51,3 +51,7 @@ public class CorporateTaxServlet extends HttpServlet
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

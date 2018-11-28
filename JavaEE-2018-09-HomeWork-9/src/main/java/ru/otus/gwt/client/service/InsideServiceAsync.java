@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 22:58.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:27.
  * InsideServiceAsync.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -7,10 +7,6 @@
  */
 
 package ru.otus.gwt.client.service;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import ru.otus.gwt.shared.Emp;

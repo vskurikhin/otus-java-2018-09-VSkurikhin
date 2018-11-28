@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:41.
- * DeptController.java
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:20.
+ * GroupController.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -8,11 +8,15 @@
 
 package ru.otus.db.dao.jdbc;
 
+/*
+ * Created by VSkurikhin at winter 2018.
+ */
+
 import ru.otus.db.Executor;
 import ru.otus.db.ResultHandler;
 import ru.otus.exeptions.ExceptionSQL;
 import ru.otus.exeptions.ExceptionThrowable;
-import ru.otus.models.DeptEntity;
+import ru.otus.models.GroupEntity;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -22,25 +26,25 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class DeptController extends AbstractController <DeptEntity, Long>
+public class GroupController extends AbstractController <GroupEntity, Long>
 {
-    public static final String SELECT_ALL = "SELECT id, pid, title FROM dep_directory";
+    public static final String SELECT_ALL = "SELECT id, groupname, login FROM user_groups";
     public static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
-    public static final String INSERT = "INSERT INTO dep_directory (id, pid, title) VALUES (?, ?, ?)";
-    public static final String UPDATE = "UPDATE dep_directory SET pid = ?, title = ? WHERE id = ?";
-    public static final String DELETE = "DELETE FROM dep_directory WHERE id = ?";
+    public static final String INSERT = "INSERT INTO user_groups (id, groupname, login) VALUES (?, ?, ?)";
+    public static final String UPDATE = "UPDATE user_groups SET groupname = ?, login = ? WHERE id = ?";
+    public static final String DELETE = "DELETE FROM user_groups WHERE id = ?";
 
-    DeptController(DataSource dataSource)
+    GroupController(DataSource dataSource)
     {
         super(dataSource);
     }
 
-    private DeptEntity setDeptEntity(DeptEntity entity, ResultSet resultSet) throws ExceptionSQL
+    private GroupEntity setGroupEntity(GroupEntity entity, ResultSet resultSet) throws ExceptionSQL
     {
         try {
             entity.setId(resultSet.getLong("id"));
-            entity.setParentId(resultSet.getLong("pid"));
-            entity.setTitle(resultSet.getString("title"));
+            entity.setGroupname(resultSet.getString("groupname"));
+            entity.setLogin(resultSet.getString("login"));
         } catch (SQLException e) {
             throw new ExceptionSQL(e);
         }
@@ -48,33 +52,33 @@ public class DeptController extends AbstractController <DeptEntity, Long>
         return entity;
     }
 
-    private DeptEntity getDeptEntity(ResultSet resultSet) throws ExceptionSQL
+    private GroupEntity getGroupEntity(ResultSet resultSet) throws ExceptionSQL
     {
-        DeptEntity entity = new DeptEntity();
-        setDeptEntity(entity, resultSet);
+        GroupEntity entity = new GroupEntity();
+        setGroupEntity(entity, resultSet);
 
         return entity;
     }
 
     @Override
-    public List<DeptEntity> getAll() throws ExceptionThrowable
+    public List<GroupEntity> getAll() throws ExceptionThrowable
     {
         try {
-            return getArrayListAll(SELECT_ALL, this::getDeptEntity);
+            return getArrayListAll(SELECT_ALL, this::getGroupEntity);
         } catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
 
     @Override
-    public DeptEntity getEntityById(Long id) throws ExceptionThrowable
+    public GroupEntity getEntityById(Long id) throws ExceptionThrowable
     {
         AtomicBoolean exists = new AtomicBoolean(false);
-        final DeptEntity result = new DeptEntity();
+        final GroupEntity result = new GroupEntity();
 
         ResultHandler handler = resultSet -> {
             if (resultSet.next()) {
-                DeptController.this.setDeptEntity(result, resultSet);
+                GroupController.this.setGroupEntity(result, resultSet);
                 exists.set(true);
             }
         };
@@ -84,25 +88,25 @@ public class DeptController extends AbstractController <DeptEntity, Long>
         return exists.get() ? result : null;
     }
 
-    public Consumer<PreparedStatement> getConsumerInsertDeptEntity(DeptEntity entity)
+    public Consumer<PreparedStatement> getConsumerInsertGroupEntity(GroupEntity entity)
     {
         return preparedStatement -> {
             try {
                 preparedStatement.setLong(1, entity.getId());
-                preparedStatement.setLong(2, entity.getParentId());
-                preparedStatement.setString(3, entity.getTitle());
+                preparedStatement.setString(2, entity.getGroupname());
+                preparedStatement.setString(3, entity.getLogin());
             } catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
     }
 
-    public Consumer<PreparedStatement> getConsumerUpdateDeptEntity(DeptEntity entity)
+    public Consumer<PreparedStatement> getConsumerUpdateGroupEntity(GroupEntity entity)
     {
         return preparedStatement -> {
             try {
-                preparedStatement.setLong(1, entity.getParentId());
-                preparedStatement.setString(2, entity.getTitle());
+                preparedStatement.setString(1, entity.getGroupname());
+                preparedStatement.setString(2, entity.getLogin());
                 preparedStatement.setLong(3, entity.getId());
             } catch (SQLException e) {
                 throw new ExceptionSQL(e);
@@ -111,11 +115,11 @@ public class DeptController extends AbstractController <DeptEntity, Long>
     }
 
     @Override
-    public DeptEntity update(DeptEntity entity) throws ExceptionThrowable
+    public GroupEntity update(GroupEntity entity) throws ExceptionThrowable
     {
         try {
             Executor executor = new Executor(getDataSource().getConnection());
-            if (executor.execUpdate(UPDATE, getConsumerUpdateDeptEntity(entity)) < 1) {
+            if (executor.execUpdate(UPDATE, getConsumerUpdateGroupEntity(entity)) < 1) {
                 throw new SQLException("Error SQL update!");
             }
 
@@ -139,11 +143,11 @@ public class DeptController extends AbstractController <DeptEntity, Long>
     }
 
     @Override
-    public boolean create(DeptEntity entity) throws ExceptionThrowable
+    public boolean create(GroupEntity entity) throws ExceptionThrowable
     {
         try {
             Executor executor = new Executor(getDataSource().getConnection());
-            int count = executor.execUpdate(INSERT, getConsumerInsertDeptEntity(entity));
+            int count = executor.execUpdate(INSERT, getConsumerInsertGroupEntity(entity));
 
             return count > 0;
         } catch (SQLException | ExceptionSQL e) {

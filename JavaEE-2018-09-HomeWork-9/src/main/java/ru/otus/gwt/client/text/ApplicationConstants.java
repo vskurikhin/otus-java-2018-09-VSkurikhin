@@ -1,8 +1,12 @@
-package ru.otus.gwt.client.text;
-
 /*
- * Created at autumn 2018.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:28.
+ * ApplicationConstants.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client.text;
 
 import com.google.gwt.i18n.client.Constants;
 
