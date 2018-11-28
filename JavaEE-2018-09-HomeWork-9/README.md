@@ -30,4 +30,6 @@
  * Создан SOAP сервис ru.otus.soap.wservice.corptax.* и servlet.
  * Создан web интерфейс ru.otus.gwt.client.widget.TaxView.  
  * Консольный клиент ru.otus.CurrentTax.
-           
+ * Создан SOAP сервис service ru.otus.soap.wservice.salary.*.
+ * Добавленно в интерфейс ru.otus.gwt.client.widget.TaxView.
+ * Создан контроллер DAO JPA controller: EmpController.

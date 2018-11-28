@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) Victor N. Skurikhin 27.11.18 22:55.
+  ~ Copyright (c) Victor N. Skurikhin 29.11.18 0:05.
   ~ TaxView.ui.xml
   ~ $Id$
   ~ This is free and unencumbered software released into the public domain.
@@ -38,7 +38,11 @@
         </g:HorizontalPanel>
 
         <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
-            <g:Button text="search" ui:field="submit" addStyleNames="{style.redButton} submitArea"/>
+            <g:Button text="Размер налога на прибыль" ui:field="submit" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="Максимальная зарплата сотрудника" ui:field="maxSalary" addStyleNames="{style.redButton} submitArea"/>
         </g:HorizontalPanel>
     </g:VerticalPanel>
 </ui:UiBinder>

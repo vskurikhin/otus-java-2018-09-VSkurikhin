@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:20.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:56.
  * GroupController.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -132,14 +132,7 @@ public class GroupController extends AbstractController <GroupEntity, Long>
     @Override
     public boolean delete(Long id) throws ExceptionThrowable
     {
-        try {
-            Executor executor = new Executor(getDataSource().getConnection());
-            int count = executor.execUpdate(DELETE, getConsumerLongId(id));
-
-            return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
-            throw new ExceptionThrowable(e);
-        }
+        return delete(DELETE, id);
     }
 
     @Override

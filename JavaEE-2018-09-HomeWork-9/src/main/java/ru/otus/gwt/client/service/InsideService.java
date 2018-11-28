@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:27.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 23:48.
  * InsideService.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -27,6 +27,8 @@ public interface InsideService extends RemoteService
     List<Emp> searchEmp(Search search);
 
     double getTax(double income, double costs, double taxRate);
+    long getMaxSalary();
+    double getAvgSalary();
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

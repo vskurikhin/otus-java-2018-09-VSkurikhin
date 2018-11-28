@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:33.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 21:08.
  * CorporateTaxServlet.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -8,7 +8,6 @@
 
 package ru.otus.soap.wservice.corptax;
 
-import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import ru.otus.soap.wsclient.corptax.CorporateTaxProvider;
 import ru.otus.soap.wsclient.corptax.CorporateTaxWebService;
 

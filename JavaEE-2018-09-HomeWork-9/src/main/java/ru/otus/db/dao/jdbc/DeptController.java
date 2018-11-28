@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:41.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:55.
  * DeptController.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -128,14 +128,7 @@ public class DeptController extends AbstractController <DeptEntity, Long>
     @Override
     public boolean delete(Long id) throws ExceptionThrowable
     {
-        try {
-            Executor executor = new Executor(getDataSource().getConnection());
-            int count = executor.execUpdate(DELETE, getConsumerLongId(id));
-
-            return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
-            throw new ExceptionThrowable(e);
-        }
+        return delete(DELETE, id);
     }
 
     @Override

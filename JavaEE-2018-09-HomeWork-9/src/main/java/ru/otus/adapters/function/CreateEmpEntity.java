@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 22:25.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:59.
  * CreateEmpEntity.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -10,7 +10,6 @@ package ru.otus.adapters.function;
 
 import ru.otus.models.DeptEntity;
 import ru.otus.models.EmpEntity;
-import ru.otus.models.UserEntity;
 import ru.otus.utils.NullString;
 
 import java.util.function.Function;

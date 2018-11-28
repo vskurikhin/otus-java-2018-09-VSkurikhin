@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:27.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 23:48.
  * InsideServiceAsync.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -25,6 +25,8 @@ public interface InsideServiceAsync
     void searchEmp(Search search, AsyncCallback<List<Emp>> async);
 
     void getTax(double income, double costs, double taxRate, AsyncCallback<Double> async);
+    void getMaxSalary(AsyncCallback<Long> async);
+    void getAvgSalary(AsyncCallback<Double> async);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

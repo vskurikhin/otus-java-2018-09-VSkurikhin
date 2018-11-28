@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 23:28.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 23:55.
  * TaxView.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -62,6 +62,7 @@ public class TaxView extends Composite implements IsWidget
         double income = Double.parseDouble(incomeTextField.getValue());
         double costs = Double.parseDouble(costsTextField.getValue());
         double taxRate = Double.parseDouble(taxRateTextField.getValue());
+
         service.getTax(income, costs, taxRate, new AsyncCallback<Double>()
         {
             @Override
@@ -74,6 +75,25 @@ public class TaxView extends Composite implements IsWidget
             public void onSuccess(Double result)
             {
                 Window.alert("Размер налога на прибыль за отчетный период: " + result);
+            }
+        });
+    }
+
+    @UiHandler("maxSalary")
+    void clickHandlerMaxSalary(ClickEvent evt)
+    {
+        service.getMaxSalary(new AsyncCallback<Long>()
+        {
+            @Override
+            public void onFailure(Throwable caught)
+            {
+                Window.alert("Error" + caught);
+            }
+
+            @Override
+            public void onSuccess(Long result)
+            {
+                Window.alert("Максимальная зарплата сотрудника: " + result);
             }
         });
     }

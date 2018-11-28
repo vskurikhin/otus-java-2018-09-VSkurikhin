@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Victor N. Skurikhin 28.11.18 20:32.
+ * Copyright (c) Victor N. Skurikhin 28.11.18 22:30.
  * InitializeListener.java
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -13,6 +13,7 @@ import ru.otus.services.SearchCacheService;
 import ru.otus.services.SearchCacheServiceImpl;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletContext;

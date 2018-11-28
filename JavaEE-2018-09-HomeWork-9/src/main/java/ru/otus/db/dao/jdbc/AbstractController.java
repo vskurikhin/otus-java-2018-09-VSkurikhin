@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 28.11.18 20:55.
+ * AbstractController.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.db.dao.jdbc;
 
 /*
@@ -83,6 +91,18 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             Executor executor = new Executor(getDataSource().getConnection());
             executor.execQuery(sql, handler, consumer);
         } catch (SQLException e) {
+            throw new ExceptionThrowable(e);
+        }
+    }
+
+    protected boolean delete(String sql, Long id) throws ExceptionThrowable
+    {
+        try {
+            Executor executor = new Executor(getDataSource().getConnection());
+            int count = executor.execUpdate(sql, getConsumerLongId(id));
+
+            return count > 0;
+        } catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
