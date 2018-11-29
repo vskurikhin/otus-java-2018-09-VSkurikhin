@@ -1,6 +1,6 @@
 /*
- * Created by VSkurikhin 28.11.18 23:24.
  * EmpController.java
+ * This file was last modified at 29.11.18 23:00 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -33,11 +33,6 @@ public class EmpController extends AbstractController <EmpEntity, Long>
         return getEntityViaClassById(id, EmpEntity.class);
     }
 
-    public EmpEntity getEntityByTitle(String title) throws ExceptionThrowable
-    {
-        return getEntityViaClassByName("title", title, EmpEntity.class);
-    }
-
     @Override
     public EmpEntity update(EmpEntity entity) throws ExceptionThrowable
     {
@@ -53,7 +48,7 @@ public class EmpController extends AbstractController <EmpEntity, Long>
     @Override
     public boolean create(EmpEntity entity) throws ExceptionThrowable
     {
-        return persistEntity(entity);
+        return mergeEntity(entity) != null;
     }
 
     public long getMaxSalary() throws ExceptionThrowable

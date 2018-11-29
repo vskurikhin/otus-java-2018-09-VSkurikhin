@@ -1,6 +1,6 @@
 /*
- * Created by VSkurikhin 28.11.18 20:29.
  * EmpEntitiesList.java
+ * This file was last modified at 29.11.18 11:04 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>

@@ -1,6 +1,6 @@
 /*
- * Created by VSkurikhin 28.11.18 20:25.
  * UserController.java
+ * This file was last modified at 29.11.18 21:47 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -53,7 +53,7 @@ public class UserController extends AbstractController <UserEntity, Long>
     @Override
     public boolean create(UserEntity entity) throws ExceptionThrowable
     {
-        return persistEntity(entity);
+        return mergeEntity(entity) != null;
     }
 }
 

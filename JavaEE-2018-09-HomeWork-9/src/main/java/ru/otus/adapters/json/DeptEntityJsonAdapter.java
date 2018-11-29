@@ -1,6 +1,14 @@
 /*
- * Created by VSkurikhin 28.11.18 21:03.
  * DeptEntityJsonAdapter.java
+ * This file was last modified at 29.11.18 10:38 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * DeptEntityJsonAdapter.java
+ * This file was last modified at 29.11.18 10:36 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -19,7 +27,7 @@ implements JsonbAdapter<DeptEntity, String>, DataSetAdapter<DeptEntity>
     /**
      * The marshall method is convert the DeptEntity object to JSON.
      *
-     * @param dept the DeptEntity object to JSON.
+     * @param dept the DeptEntity object.
      * @return JSON String.
      * @throws Exception
      */

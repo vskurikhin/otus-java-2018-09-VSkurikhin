@@ -1,12 +1,10 @@
 <!--
-  ~ Created by VSkurikhin 29.11.18 0:05.
   ~ TaxView.ui.xml
+  ~ This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
   ~ $Id$
   ~ This is free and unencumbered software released into the public domain.
   ~ For more information, please refer to <http://unlicense.org>
   -->
-
-<!-- TaxView.ui.xml -->
 
 <!--suppress GWTStyleCheck -->
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'

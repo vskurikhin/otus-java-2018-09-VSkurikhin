@@ -1,6 +1,14 @@
 /*
- * Created by VSkurikhin 28.11.18 20:30.
  * UserEntity.java
+ * This file was last modified at 29.11.18 21:36 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * UserEntity.java
+ * This file was last modified at 29.11.18 11:08 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -31,6 +39,8 @@ import java.io.Serializable;
 public class UserEntity implements DataSet, Serializable
 {
     @Id
+    @SequenceGenerator(name="user_identifier", sequenceName="user_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user_identifier")
     @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     private long id;

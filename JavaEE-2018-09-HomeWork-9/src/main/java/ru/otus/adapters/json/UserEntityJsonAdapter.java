@@ -1,16 +1,12 @@
 /*
- * Created by VSkurikhin 28.11.18 21:06.
  * UserEntityJsonAdapter.java
+ * This file was last modified at 29.11.18 10:34 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.adapters.json;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import ru.otus.adapters.DataSetAdapter;
 import ru.otus.models.UserEntity;

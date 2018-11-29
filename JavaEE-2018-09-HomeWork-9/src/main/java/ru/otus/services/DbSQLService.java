@@ -1,6 +1,6 @@
 /*
- * Created by VSkurikhin 28.11.18 23:06.
  * DbSQLService.java
+ * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -8,7 +8,6 @@
 
 package ru.otus.services;
 
-import com.google.web.bindery.requestfactory.shared.Service;
 import ru.otus.db.DBConf;
 import ru.otus.db.PostgreSQLService;
 import ru.otus.db.dao.ControllersOfClass;

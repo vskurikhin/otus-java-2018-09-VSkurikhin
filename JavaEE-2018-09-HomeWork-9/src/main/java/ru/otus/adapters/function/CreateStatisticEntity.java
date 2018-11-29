@@ -1,6 +1,6 @@
 /*
- * Created by VSkurikhin 27.11.18 22:25.
  * CreateStatisticEntity.java
+ * This file was last modified at 29.11.18 10:33 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
