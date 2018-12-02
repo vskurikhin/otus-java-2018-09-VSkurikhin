@@ -1,6 +1,6 @@
 /*
  * DbService.java
- * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:50 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -9,15 +9,15 @@
 package ru.otus.services;
 
 import ru.otus.db.dao.DAOController;
+import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.*;
 
 import javax.servlet.ServletContext;
-import java.io.Closeable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public interface DbService extends Closeable
+public interface DbService
 {
     List<StatisticEntity> getAllStatisticElements() throws SQLException;
 
@@ -39,13 +39,13 @@ public interface DbService extends Closeable
 
     //// REFACTORING ////
 
-    void clearDb(ServletContext sc) throws Exception;
+    void clearDb(ServletContext sc) throws ExceptionThrowable;
 
-    void importDb(ServletContext sc) throws Exception;
+    void importDb(ServletContext sc) throws ExceptionThrowable;
 
     void exportDb(ServletContext sc) throws Exception;
 
-    <E extends DataSet> DAOController<E , Long> getController(Class<E> c);
+    <E extends DataSet> DAOController<E, Long> getController(Class<E> c);
 
     <E extends DataSet> void saveEntity(E entity);
 
