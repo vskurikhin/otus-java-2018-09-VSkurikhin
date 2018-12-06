@@ -1,6 +1,6 @@
 /*
  * AbstractController.java
- * This file was last modified at 2018.12.01 15:14 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.03 20:05 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -25,11 +25,30 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
 {
     private EntityManagerFactory emf;
 
+    private Class<E> classE;
+
+    private Class<E> getTypeFirstParameterClass()
+    {
+        Type[] types = getClass().getGenericInterfaces();
+        for (Type type : types) {
+            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
+                ParameterizedType paramType = (ParameterizedType) type;
+                // some magic with reflection
+                //noinspection unchecked
+                return (Class<E>) paramType.getActualTypeArguments()[0];
+            }
+        }
+        return null;
+    }
+
     public AbstractController()
-    { /* None */ }
+    {
+        classE = getTypeFirstParameterClass();
+    }
 
     public AbstractController(EntityManagerFactory entityManagerFactory)
     {
+        this();
         this.emf = entityManagerFactory;
     }
 
@@ -258,32 +277,9 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
     }
 
     @Override
-    public EntityManager getEntityManagerAndMerge(E entity)
-    {
-        EntityManager em = emf.createEntityManager();
-        em.merge(entity);
-        return em;
-    }
-
-
-    private Class<E> getTypeFirstParameterClass()
-    {
-        Type[] types = getClass().getGenericInterfaces();
-        for (Type type : types) {
-            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
-                ParameterizedType paramType = (ParameterizedType) type;
-                // some magic with reflection
-                //noinspection unchecked
-                return (Class<E>) paramType.getActualTypeArguments()[0];
-            }
-        }
-        return null;
-    }
-
-    @Override
     public E findById(EntityManager entityManager, long key) throws ExceptionThrowable
     {
-        return entityManager.find(getTypeFirstParameterClass(), key);
+        return entityManager.find(classE, key);
     }
 
     @Override

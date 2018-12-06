@@ -1,6 +1,6 @@
 /*
  * JPAController.java
- * This file was last modified at 2018.12.01 15:17 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.03 20:05 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -15,8 +15,6 @@ import javax.persistence.EntityManager;
 
 public interface JPAController<E extends DataSet, K> extends DAOController<E, K>
 {
-    EntityManager getEntityManagerAndMerge(E entity);
-
     E findById(EntityManager entityManager, long key) throws ExceptionThrowable;
 
     E findById(long key) throws ExceptionThrowable;

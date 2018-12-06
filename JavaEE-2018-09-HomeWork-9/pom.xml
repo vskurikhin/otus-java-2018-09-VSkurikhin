@@ -2,7 +2,7 @@
 
 <!--
   ~ pom.xml
-  ~ This file was last modified at 2018.12.02 23:28 by Victor N. Skurikhin.
+  ~ This file was last modified at 2018.12.03 20:06 by Victor N. Skurikhin.
   ~ $Id$
   ~ This is free and unencumbered software released into the public domain.
   ~ For more information, please refer to <http://unlicense.org>
@@ -17,7 +17,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework9</artifactId>
-    <version>9.2-2</version>
+    <version>9.2-3</version>
     <packaging>war</packaging>
 
     <name>JavaEE-09-2018 HomeWork-9 Maven Webapp</name>
