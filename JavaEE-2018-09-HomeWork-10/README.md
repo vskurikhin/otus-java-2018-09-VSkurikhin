@@ -4,7 +4,7 @@
 #### Группа 2018-09
 ##### Виктор Скурихин (Victor Skurikhin)
 
-### Домашнее задание 9
+### Домашнее задание 10
  * Настроки GlassFish:
    * Configurations -> server-config -> Security -> Realms
      Создать `jdbc-realm` со следующими параметрами:
@@ -27,9 +27,12 @@
            Charset:
  * Имя пользователя: `funt` 
  * Пароль: `funt`
- * Создан SOAP сервис ru.otus.soap.wservice.corptax.* и servlet.
- * Создан web интерфейс ru.otus.gwt.client.widget.TaxView.  
- * Консольный клиент ru.otus.CurrentTax.
- * Импортирован пакет ru.otus.models.cbr из src/main/resources/DailyInfo.wsdl.
- * Созданы два REST сервиса ru.otus.rest.cbr.CursOnDate и ru.otus.rest.cbr.LastDate.
- * Для SOAP запроса getCursOnDateXML создан GetCursOnDateXMLAdapter.
+ * Приложение декомпозированно на 3 модуля и два приложения.
+   * Приложение HomeWork-10-webui - Client Tier.
+   * Приложение HomeWork-10-rest
+     * Модуль HomeWorkREST - Web RESTful Tier.
+     * Модуль HomeWorkPersistent - Data Access Tier.
+ * Создан RESTful-сервис - дифференцированный платеж - DiffPayResource. 
+ * Создан RESTful-сервис - аннуитетный платеж - AnnuityPayResource.
+ * Разработаны/отрефакторены справочники CRUD: DeptResource, EmpResource, StatisticResource и UserResource.
+ * Разработать UI для работы с дифференцированным и аннуитетным платежами (Client Tier).
