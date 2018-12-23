@@ -33,16 +33,16 @@
         UserAttemptController, UserController, AnnuityPayResource, DeptResource,
         DiffPayResource, EmpResource, StatisticResource, UserResource.
 ````
- * Создано новое, развернутого на том же аппликейшн сервере web-приложениe ``HomeWork11WebUI``,
-   это приложение создаёт запросы к EJB-бинам (DeptController и GameAttemptsService) главного приложения
-   с последующим отображением полученной информации в выходной поток сервлетов ``GameAttemptServlet`` и ``RequestServlet``,
+ * Создано новое, на том же аппликейшн сервере, web-приложениe ``HomeWork11WebUI``,
+   это приложение создаёт запросы к EJB-бинам (DeptController и GameAttemptsService) главного приложения,
+   с последующим отображением полученной информации в выходной поток сервлетов ``GameAttemptServlet`` и ``RequestServlet``.
  * Разработана игра, по угадыванию случайного числа пользователем (от 0 до 9).
    Для этого в приложении ``HomeWork11WebUI`` страница ``game.jsp``, с двумя полями для ввода логина пользователя и целого
    числа, а также с кнопкой отправки результата.
    Для привлечения интереса к процессу, предоставляется возможность ограниченного количество попыток угадывания числа
-   (например, 10 попыток), после чего доступ к игре блокируется.
+   (10 попыток), после чего доступ к игре блокируется.
  * Порядок сборки:
-   * Общая, для основного приложения ``HomeWork11Core`` и ``HomeWork11WebUI`` приложения, библиотека ``HomeWork11Lib``:
+   * Общая, для основного ``HomeWork11Core`` и ``HomeWork11WebUI`` приложений, библиотека ``HomeWork11Lib``:
    ````
         mvn -f HomeWork11Lib/pom.xml clean package install
    ````
@@ -53,7 +53,7 @@
    * Создение схемы и хранимых процедур:
    ````
         ./createSchema.sh
-        ./createFunction.sh or createFunction.bat
+        ./createFunction.sh
    ````
       *  или Windows
    ````
@@ -68,4 +68,3 @@
    ````
         mvn -f HomeWork11WebUI/pom.xml clean package glassfish:deploy
    ````
-
