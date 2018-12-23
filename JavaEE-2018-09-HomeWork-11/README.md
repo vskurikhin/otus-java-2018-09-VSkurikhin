@@ -65,7 +65,6 @@
         mvn -f HomeWork/pom.xml glassfish:deploy
    ````
    * ``HomeWork11WebUI`` приложение:
-   *
    ````
         mvn -f HomeWork11WebUI/pom.xml clean package glassfish:deploy
    ````
