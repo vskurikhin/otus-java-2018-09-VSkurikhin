@@ -11,6 +11,7 @@
     <meta charset=UTF-8>
     <title id="title">Home Work 11 of JavaEE 2018-09 | a work showcasing the REST API</title>
     <link rel="stylesheet" href="<c:out value="${baseURL}"/>css/style-all.min.css"/>
+    <script type="text/javascript" language="javascript" src="<c:out value="${baseURL}"/>js/script-all.min.js"></script>
 </head>
 
 <body class="body">

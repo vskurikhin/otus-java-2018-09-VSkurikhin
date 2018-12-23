@@ -41,9 +41,11 @@ public class UserController extends AbstractController<UserEntity, Long> impleme
         return em;
     }
 
-    void setEntityManager(EntityManager em)
+    public void setEntityManager(EntityManager em)
     {
-        this.em = em;
+        if (null == this.em) {
+            this.em = em;
+        }
     }
 
     @Override

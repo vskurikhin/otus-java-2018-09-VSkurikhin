@@ -6,7 +6,8 @@
             <td class="tg-0lax" colspan="2">
                 <nav class="menu">
                     <ul>
-                        <li><a id="navigation-menu-0" href="<c:out value="${baseURL}"/>welcome.jsp#" onClick="return false;">Главная</a></li>
+                        <li><a id="navigation-menu-0" href="<c:out value="${baseURL}"/>welcome.jsp#">Главная</a></li>
+                        <li><a id="navigation-menu-4" href="<c:out value="${baseURL}"/>game.jsp#">Игра</a></li>
                         <li><a id="navigation-menu-4" href="<c:out value="${baseURL}"/>inside.jsp#">Авторизация</a></li>
                     </ul>
                 </nav>

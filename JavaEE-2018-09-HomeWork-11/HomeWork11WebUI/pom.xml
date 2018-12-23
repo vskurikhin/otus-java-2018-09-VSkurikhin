@@ -260,7 +260,9 @@
                     <!-- JS minimization -->
                     <jsSourceDir>js</jsSourceDir>
                     <jsSourceFiles>
+                        <jsSourceFile>base_url.js</jsSourceFile>
                         <jsSourceFile>cbr.js</jsSourceFile>
+                        <jsSourceFile>common.js</jsSourceFile>
                         <jsSourceFile>login.js</jsSourceFile>
                         <jsSourceFile>search.js</jsSourceFile>
                         <jsSourceFile>xhr.js</jsSourceFile>

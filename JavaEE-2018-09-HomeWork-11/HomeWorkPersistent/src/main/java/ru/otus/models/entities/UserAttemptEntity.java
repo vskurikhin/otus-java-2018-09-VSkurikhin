@@ -32,7 +32,7 @@ public class UserAttemptEntity implements DataSet, Serializable
     @Column(name = F_ID, nullable = false, unique = true)
     private long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = F_USER_ID, referencedColumnName = F_ID)
     private UserEntity user;
 
@@ -41,6 +41,19 @@ public class UserAttemptEntity implements DataSet, Serializable
 
     @Column(name = F_LAST_ATTEMPT_TIME)
     private LocalDateTime lastAttemptTime;
+
+    public UserAttemptEntity(UserEntity userEntity)
+    {
+        user = userEntity;
+        clearAttempts();
+    }
+
+    public UserAttemptEntity(UserEntity userEntity, int attempts)
+    {
+        user = userEntity;
+        attemptsLeft = attempts;
+        lastAttemptTime = LocalDateTime.now();
+    }
 
     private void clearAttempts()
     {

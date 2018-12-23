@@ -10,6 +10,14 @@
                 <jndi-name>java:global/HomeWork11Core/HomeWorkPersistent/DeptController</jndi-name>
             </ejb-ref>
         </ejb>
+
+        <ejb>
+            <ejb-name>GameAttemptsServiceBean</ejb-name>
+            <ejb-ref>
+                <ejb-ref-name>GameAttemptsService</ejb-ref-name>
+                <jndi-name>java:global/HomeWork11Core/HomeWorkPersistent/GameAttemptsServiceImpl</jndi-name>
+            </ejb-ref>
+        </ejb>
     </enterprise-beans>
     <keep-state>true</keep-state>
 </glassfish-ejb-jar>

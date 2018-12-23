@@ -19,6 +19,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static ru.otus.shared.Constants.DB.F_ID;
+
 public abstract class AbstractController<E extends DataSet, K> implements DAOController<E, K>
 {
     private Class<E> classE;
@@ -26,6 +28,30 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
     protected abstract EntityManager getEntityManager();
 
     protected abstract Class<E> getTypeFirstParameterClass();
+
+    public E findById(EntityManager entityManager, long key)
+    {
+        if (null == classE) {
+            classE = getTypeFirstParameterClass();
+        }
+
+        return entityManager.find(classE, key);
+    }
+
+    public E findById(long key)
+    {
+        EntityManager em = getEntityManager();
+
+        try {
+            return findById(em, key);
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e); // TODO Custom RuntimeException
+        }
+    }
 
     protected List<E> findAll(Class<E> clazz)
     {
@@ -46,7 +72,7 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         }
     }
 
-    protected E findEntityViaClassById(K id, Class<E> clazz)
+    protected List<E> findEntitiesViaClassByKey(String keyName, K key, Class<E> clazz)
     {
         EntityManager em = getEntityManager();
 
@@ -55,10 +81,9 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             CriteriaQuery<E> query = criteriaBuilder.createQuery(clazz);
             Root<E> criteria = query.from(clazz);
             query = query.select(criteria)
-                    .where(criteriaBuilder.equal(criteria.get("id"), id));
-            E result = em.createQuery(query).getSingleResult();
+                    .where(criteriaBuilder.equal(criteria.get(keyName), key));
 
-            return result;
+            return em.createQuery(query).getResultList();
         }
         catch (NoResultException e) {
             return null;
@@ -68,7 +93,7 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         }
     }
 
-    protected E findEntityViaClassByName(String fieldName, String valueName, Class<E> clazz)
+    protected <V> TypedQuery<E> queryViaClassByFieldValue(String fieldName, V value, Class<E> clazz)
     {
         EntityManager em = getEntityManager();
 
@@ -77,16 +102,43 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             CriteriaQuery<E> query = criteriaBuilder.createQuery(clazz);
             Root<E> criteria = query.from(clazz);
             query = query.select(criteria)
-                    .where(criteriaBuilder.equal(criteria.get(fieldName), valueName));
+                .where(criteriaBuilder.equal(criteria.get(fieldName), value));
 
-            return em.createQuery(query).getSingleResult();
-        }
-        catch (NoResultException e) {
-            return null;
+            return em.createQuery(query);
         }
         catch (Exception e) {
             throw new RuntimeException(e); // TODO Custom RuntimeException
         }
+    }
+
+    protected <V> E findEntityViaClassByFieldValue(String fieldName, V value, Class<E> clazz)
+    {
+        try {
+            return queryViaClassByFieldValue(fieldName, value, clazz).getSingleResult();
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    protected  <V> List<E> findEntitiesViaClassByFieldValue(String fieldName, V value, Class<E> clazz)
+    {
+        try {
+            return queryViaClassByFieldValue(fieldName, value, clazz).getResultList();
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    protected <V> E findEntityViaClassByName(String fieldName, String valueName, Class<E> clazz)
+    {
+        return findEntityViaClassByFieldValue(fieldName, valueName, clazz);
+    }
+
+    protected E findEntityViaClassById(K id, Class<E> clazz)
+    {
+        return findEntityViaClassByFieldValue(F_ID, id, clazz);
     }
 
     protected E mergeEntity(E entity)
@@ -217,30 +269,6 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             }
 
             return avgValue;
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e); // TODO Custom RuntimeException
-        }
-    }
-
-    public E findById(EntityManager entityManager, long key)
-    {
-        if (null == classE) {
-            classE = getTypeFirstParameterClass();
-        }
-
-        return entityManager.find(classE, key);
-    }
-
-    public E findById(long key)
-    {
-        EntityManager em = getEntityManager();
-
-        try {
-            return findById(em, key);
-        }
-        catch (NoResultException e) {
-            return null;
         }
         catch (Exception e) {
             throw new RuntimeException(e); // TODO Custom RuntimeException

@@ -27,9 +27,46 @@
            Charset:
  * Имя пользователя: `funt` 
  * Пароль: `funt`
- * Создан SOAP сервис ru.otus.soap.wservice.corptax.* и servlet.
- * Создан web интерфейс ru.otus.gwt.client.widget.TaxView.  
- * Консольный клиент ru.otus.CurrentTax.
- * Импортирован пакет ru.otus.models.cbr из src/main/resources/DailyInfo.wsdl.
- * Созданы два REST сервиса ru.otus.rest.cbr.CursOnDate и ru.otus.rest.cbr.LastDate.
- * Для SOAP запроса getCursOnDateXML создан GetCursOnDateXMLAdapter.
+ * Переписаны основные компоненты системы c логикой их работы в EJB
+````
+        DeptController, EmpController, GroupController, StatisticController,
+        UserAttemptController, UserController, AnnuityPayResource, DeptResource,
+        DiffPayResource, EmpResource, StatisticResource, UserResource.
+````
+ * Создано новое, развернутого на том же аппликейшн сервере web-приложениe ``HomeWork11WebUI``,
+   это приложение создаёт запросы к EJB-бинам (DeptController и GameAttemptsService) главного приложения
+   с последующим отображением полученной информации в выходной поток сервлетов ``GameAttemptServlet`` и ``RequestServlet``,
+ * Разработана игра, по угадыванию случайного числа пользователем (от 0 до 9).
+   Для этого в приложении ``HomeWork11WebUI`` страница ``game.jsp``, с двумя полями для ввода логина пользователя и целого
+   числа, а также с кнопкой отправки результата.
+   Для привлечения интереса к процессу, предоставляется возможность ограниченного количество попыток угадывания числа
+   (например, 10 попыток), после чего доступ к игре блокируется.
+ * Порядок сборки:
+   * Общая, для основного приложения ``HomeWork11Core`` и ``HomeWork11WebUI`` приложения, библиотека ``HomeWork11Lib``:
+   ````
+        mvn -f HomeWork11Lib/pom.xml clean package install
+   ````
+   * Основноe приложение ``HomeWork11Core``:
+   ````
+        mvn -f HomeWorkPersistent/pom.xml clean package install dependency:copy-dependencies
+   ````
+   * Создение схемы и хранимых процедур:
+   ````
+        ./createSchema.sh
+        ./createFunction.sh or createFunction.bat
+   ````
+      *  или Windows
+   ````
+        createSchema.bat
+        createFunction.bat
+   ````
+   * Развёртывание основного приложения ``HomeWork11Core``:
+   ````
+        mvn -f HomeWork/pom.xml glassfish:deploy
+   ````
+   * ``HomeWork11WebUI`` приложение:
+   *
+   ````
+        mvn -f HomeWork11WebUI/pom.xml clean package glassfish:deploy
+   ````
+

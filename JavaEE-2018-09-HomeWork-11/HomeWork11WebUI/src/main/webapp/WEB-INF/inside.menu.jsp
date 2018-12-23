@@ -15,6 +15,7 @@
                 <nav class="menu">
                     <ul>
                         <li><a id="navigation-menu-0" href="<c:out value="${baseURL}"/>inside.jsp#">Главная</a></li>
+                        <li><a id="navigation-menu-4" href="<c:out value="${baseURL}"/>game.jsp#">Игра</a></li>
                         <li><a id="navigation-menu-1" href="<c:out value="${baseURL}"/>inside/request/dept/list">Запросы к Remote EJB</a></li>
                     </ul>
                 </nav>

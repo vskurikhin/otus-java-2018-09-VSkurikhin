@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
@@ -34,6 +35,8 @@ public class UserAttemptController extends AbstractController<UserAttemptEntity,
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
 
+    public static final String ENTITY_NAME = UserAttemptEntity.class.getName();
+
     @PersistenceContext(unitName = PERSISTENCE_UNIT_NAME)
     private EntityManager em;
 
@@ -43,9 +46,11 @@ public class UserAttemptController extends AbstractController<UserAttemptEntity,
         return em;
     }
 
-    void setEntityManager(EntityManager em)
+    public void setEntityManager(EntityManager em)
     {
-        this.em = em;
+        if (null == this.em) {
+            this.em = em;
+        }
     }
 
     @Override
@@ -87,6 +92,31 @@ public class UserAttemptController extends AbstractController<UserAttemptEntity,
     public boolean create(UserAttemptEntity entity)
     {
         return mergeEntity(entity) != null;
+    }
+
+    @Override
+    public List<UserAttemptEntity> findEntitiesByUserId(long userId)
+    {
+        String sqlFindEntitiesByUserId = "SELECT ua FROM " + ENTITY_NAME + " ua " +
+                                         "  JOIN ua.user u WHERE u.id = :userId";
+
+        Query query = em.createQuery(sqlFindEntitiesByUserId);
+        query.setParameter("userId", userId);
+
+        //noinspection unchecked
+        return query.getResultList();
+    }
+
+    @Override
+    public long getAttemptsCount(long userId)
+    {
+        String sqlCountEntitiesByUserId = "SELECT COUNT(ua.id) FROM " + ENTITY_NAME + " ua " +
+                                          "  JOIN ua.user u WHERE u.id = :userId";
+
+        Query query = em.createQuery(sqlCountEntitiesByUserId);
+        query.setParameter("userId", userId);
+
+        return (long) query.getSingleResult();
     }
 }
 
