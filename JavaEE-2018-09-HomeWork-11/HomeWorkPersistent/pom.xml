@@ -40,7 +40,7 @@
         <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.0-api -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>${org.hibernate.javax.persistence.version}</version>
             <scope>provided</scope>
         </dependency>

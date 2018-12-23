@@ -52,7 +52,7 @@
         <org.apache.logging.log4j.version>2.9.1</org.apache.logging.log4j.version>
         <org.eclipse.persistence.version>2.2.1</org.eclipse.persistence.version>
         <org.eclipse.version>2.7.1</org.eclipse.version>
-        <org.hibernate.javax.persistence.version>1.0.1.Final</org.hibernate.javax.persistence.version>
+        <org.hibernate.javax.persistence.version>1.0.0.Final</org.hibernate.javax.persistence.version>
         <org.hibernate.version>5.3.7.Final</org.hibernate.version>
         <org.json.version>20180813</org.json.version>
         <org.mockito.version>2.21.0</org.mockito.version>

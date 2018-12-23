@@ -48,7 +48,8 @@
    ````
    * Основноe приложение ``HomeWork11Core``:
    ````
-        mvn -f HomeWorkPersistent/pom.xml clean package install dependency:copy-dependencies
+        mvn clean package
+        mvn -f HomeWorkPersistent/pom.xml install dependency:copy-dependencies
    ````
    * Создение схемы и хранимых процедур:
    ````
